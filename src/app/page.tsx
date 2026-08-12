@@ -7,6 +7,74 @@ import { motion, AnimatePresence, useMotionValue, useMotionTemplate, useScroll, 
 import { Target, Zap, TrendingUp, Layers, ChevronDown, ArrowRight, Unlock, Check, MessageSquare } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 
+function MobileAnimatedCards({ cards }: { cards: any[] }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, offsetWidth } = scrollContainerRef.current;
+      const index = Math.round(scrollLeft / (offsetWidth * 0.85));
+      setActiveIndex(Math.min(Math.max(0, index), cards.length - 1));
+    }
+  };
+
+  const scrollToIndex = (index: number) => {
+    if (scrollContainerRef.current) {
+      const cardWidth = scrollContainerRef.current.offsetWidth * 0.85;
+      scrollContainerRef.current.scrollTo({
+        left: index * cardWidth,
+        behavior: "smooth"
+      });
+      setActiveIndex(index);
+    }
+  };
+
+  return (
+    <div className="w-full relative block md:hidden mb-6">
+      {/* Header com indicador do pilar ativo */}
+      <div className="flex items-center justify-between mb-3 px-4">
+        <div className="flex items-center space-x-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-nex-orange animate-ping" />
+          <span className="text-[10px] font-mono tracking-[0.2em] text-zinc-400 uppercase">
+            Pilares NEX ({activeIndex + 1}/{cards.length})
+          </span>
+        </div>
+        <div className="flex space-x-1.5">
+          {cards.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollToIndex(i)}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                i === activeIndex 
+                  ? "w-6 bg-nex-orange shadow-[0_0_8px_rgba(255,106,0,0.6)]" 
+                  : "w-2 bg-white/20"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Carrossel horizontal com snap suave e sem scrollbar */}
+      <div 
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex overflow-x-auto snap-x snap-mandatory gap-3 px-4 pb-2 no-scrollbar"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {cards.map((card, index) => (
+          <div 
+            key={index}
+            className="w-[85vw] max-w-[340px] shrink-0 snap-center"
+          >
+            <SpotlightCard card={card} index={index} isActive={false} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function SpotlightCard({ card, index, isActive }: { card: any, index: number, isActive: boolean }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -17,18 +85,18 @@ function SpotlightCard({ card, index, isActive }: { card: any, index: number, is
     mouseY.set(clientY - top);
   }
 
-  // Animação de ativação do card sincronizada com o scroll
+  // Liquid Glass puro: escuro, translúcido e elegante
   const cardVariants = {
     inactive: {
-      borderColor: "rgba(255, 255, 255, 0.05)",
+      borderColor: "rgba(255, 255, 255, 0.06)",
       boxShadow: "0 8px 32px rgba(0, 0, 0, 0.8)",
-      backgroundColor: "rgba(10, 10, 10, 0.5)",
+      backgroundColor: "rgba(10, 10, 10, 0.7)",
       transition: { duration: 0.3 }
     },
     active: {
-      borderColor: "rgba(255, 106, 0, 1)", 
-      boxShadow: "0 0 40px rgba(255, 106, 0, 0.4)", 
-      backgroundColor: "#D95A00", 
+      borderColor: "rgba(255, 106, 0, 0.3)", 
+      boxShadow: "0 8px 32px rgba(255, 106, 0, 0.15)", 
+      backgroundColor: "rgba(12, 12, 12, 0.75)", 
       transition: { duration: 0.3 }
     }
   };
@@ -66,29 +134,36 @@ function SpotlightCard({ card, index, isActive }: { card: any, index: number, is
       animate={isActive ? "active" : "inactive"}
       initial="inactive"
       onMouseMove={handleMouseMove}
-      className="group relative flex flex-col md:flex-row items-start md:items-center p-6 lg:p-6 rounded-3xl backdrop-blur-3xl border overflow-hidden transition-all duration-700 hover:border-nex-orange/30 hover:shadow-[0_8px_32px_rgba(255,106,0,0.15)] z-20 gap-4 md:gap-6"
+      className="group relative flex flex-col items-start p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl border overflow-hidden transition-all duration-700 hover:border-nex-orange/30 hover:shadow-[0_8px_32px_rgba(255,106,0,0.15)] z-20 gap-6 h-full min-h-[280px] w-full"
     >
       <motion.div
-        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-0"
+        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100"
         style={{
-          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(255, 255, 255, 0.15), transparent 80%)`,
+          background: useMotionTemplate`
+            radial-gradient(
+              350px circle at ${mouseX}px ${mouseY}px,
+              rgba(255, 106, 0, 0.15),
+              transparent 80%
+            )
+          `,
         }}
       />
 
-      <motion.div 
-        variants={iconVariants}
-        className="w-12 h-12 shrink-0 rounded-full border flex items-center justify-center group-hover:border-white/60 group-hover:bg-white/20 transition-all duration-700 z-10"
-      >
-        <card.icon className="w-5 h-5 transition-colors duration-500" />
-      </motion.div>
-      
-      <div className="flex-1 flex flex-col z-10">
-        <motion.h3 variants={textVariants} className="text-lg font-bold uppercase tracking-widest mb-1 transition-colors duration-500">
-          {card.title}
-        </motion.h3>
-        <motion.p variants={descVariants} className="text-xs leading-relaxed font-medium transition-colors duration-500">
-          {card.description}
-        </motion.p>
+      <div className="relative z-10 flex flex-col items-start gap-6 w-full h-full pointer-events-none">
+        <motion.div 
+          variants={iconVariants}
+          className="w-16 h-16 rounded-2xl border flex items-center justify-center shrink-0"
+        >
+          <card.icon strokeWidth={1.5} className="w-7 h-7" />
+        </motion.div>
+        <div className="flex-1 text-left flex flex-col justify-start">
+          <motion.h3 variants={textVariants} className="text-xl font-bold tracking-wide mb-3 uppercase">
+            {card.title}
+          </motion.h3>
+          <motion.p variants={descVariants} className="text-sm leading-relaxed font-light">
+            {card.description}
+          </motion.p>
+        </div>
       </div>
     </motion.div>
   );
@@ -243,7 +318,7 @@ export default function Home() {
             
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto">
               {/* Botão Primário: Diagnóstico */}
-              <button onClick={() => router.push("/ia")} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-[40px] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white font-bold tracking-widest uppercase text-xs flex justify-center items-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group relative shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
+              <button onClick={() => router.push("/ia")} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-[40px] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white font-bold tracking-widest uppercase text-xs flex justify-center items-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
                 <span className="relative z-10 flex items-center gap-2">
                   <Target className="w-4 h-4 text-nex-orange group-hover:scale-110 transition-transform" />
                   Fazer Diagnóstico
@@ -291,7 +366,7 @@ export default function Home() {
       </section>
 
       {/* SEÇÃO 2: SYSTEM STATUS */}
-      <section ref={containerRef} className="relative z-30 w-full min-h-screen flex flex-col items-center justify-center bg-transparent py-48">
+      <section ref={containerRef} className="relative z-30 w-full min-h-screen flex flex-col items-center justify-center bg-transparent py-10 md:py-48">
         
         {/* IMAGEM ORIGINAL DA SEÇÃO 2 */}
         <div 
@@ -301,32 +376,23 @@ export default function Home() {
         <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-[#050505] via-transparent to-[#050505] z-10 pointer-events-none" />
         
         {/* OS 4 CARTÕES (Exatamente no meio da divisa entre Seção 1 e 2) */}
-        <div className="relative lg:absolute lg:top-0 lg:-translate-y-1/2 left-0 w-full z-40 mt-12 lg:-mt-[5vh]">
+        <div className="relative lg:absolute lg:top-0 lg:-translate-y-1/2 left-0 w-full z-40 mt-4 md:mt-12 lg:-mt-[5vh]">
+          {/* VERSÃO MOBILE: Stack Animado (JavaScript / Framer Motion) */}
+          <MobileAnimatedCards cards={cards} />
+
+          {/* VERSÃO DESKTOP: Grid Estático */}
           <motion.div 
             initial={{ opacity: 0, y: 100 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full max-w-[900px] mx-auto px-4 md:px-12 flex flex-col gap-4 lg:gap-0 lg:pb-[25vh]"
+            className="w-full max-w-[1400px] mx-auto px-4 md:px-12 hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
           >
-            {cards.map((card, index) => {
-              const thresholds = [0.72, 0.81, 0.90, 0.99]; 
-              const topOffset = `calc(10vh + ${index * 25}px)`;
-              return (
-                <div 
-                  key={index} 
-                  className="w-full shrink-0 lg:sticky"
-                  style={{ top: topOffset, zIndex: 10 + index }}
-                >
-                  <CardWrapper 
-                    card={card} 
-                    index={index} 
-                    progress={scrollYProgress} 
-                    threshold={thresholds[index]} 
-                  />
-                </div>
-              );
-            })}
+            {cards.map((card, index) => (
+              <div key={index} className="w-full shrink-0 h-full">
+                <SpotlightCard card={card} index={index} isActive={false} />
+              </div>
+            ))}
           </motion.div>
         </div>
 
@@ -338,7 +404,7 @@ export default function Home() {
           </div>
 
           {/* CONTEÚDO SUPERIOR: Card (No canto superior) */}
-          <div className="w-full max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 px-4 md:px-12 items-start mt-32 relative z-30">
+          <div className="w-full max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 px-4 md:px-12 items-start mt-6 md:mt-32 relative z-30">
             
             <motion.div 
               className="lg:col-start-1 lg:col-span-5 flex flex-col space-y-6"
@@ -393,12 +459,12 @@ export default function Home() {
           </div>
 
           {/* CONTEÚDO INFERIOR: A Frase Intercalada e Elemento Visual */}
-          <div className="w-full max-w-[1400px] mx-auto px-4 md:px-12 mt-24 mb-48 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-30">
+          <div className="w-full max-w-[1400px] mx-auto px-4 md:px-12 mt-12 md:mt-24 mb-32 md:mb-48 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-30">
             
-            {/* ESQUERDA: A Lente de Precisão (Método) */}
-            <div className="hidden lg:flex lg:col-span-5 items-end justify-start relative top-72 pl-8 lg:pl-16">
+            {/* A Lente de Precisão (Método) - Aparece DEPOIS do texto no mobile (order-2) e à esquerda no desktop (order-1) */}
+            <div className="order-2 lg:order-1 flex lg:col-span-5 items-center justify-center lg:justify-start relative my-8 lg:my-0 lg:top-72 pl-0 lg:pl-16 scale-85 md:scale-100">
               <motion.div 
-                className="relative w-[350px] h-[350px] flex items-center justify-center group"
+                className="relative w-[320px] md:w-[350px] h-[320px] md:h-[350px] flex items-center justify-center group"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
@@ -480,9 +546,9 @@ export default function Home() {
             </motion.div>
           </div>
 
-            {/* DIREITA: O Texto */}
+            {/* O Texto - Aparece PRIMEIRO no mobile (order-1) e à direita no desktop (order-2) */}
             <motion.div 
-              className="lg:col-start-7 lg:col-span-6 flex flex-col justify-center text-right space-y-6"
+              className="order-1 lg:order-2 lg:col-start-7 lg:col-span-6 flex flex-col justify-center text-right space-y-6"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -741,16 +807,28 @@ export default function Home() {
               Somos uma infraestrutura de resultados. Construímos ecossistemas digitais onde <strong className="font-semibold text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">a precisão técnica convence e a estética converte.</strong>
             </p>
 
-            {/* CALL TO ACTION (CTA) */}
-            <motion.div 
-              className="mt-12"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <button onClick={() => router.push("/ia")} className="group relative px-14 py-6 rounded-full bg-black/40 backdrop-blur-3xl border border-nex-orange/50 text-nex-orange hover:bg-nex-orange hover:text-black font-black tracking-[0.2em] uppercase text-sm flex items-center space-x-4 overflow-hidden transition-all duration-500 shadow-[0_0_40px_rgba(255,106,0,0.2)] hover:shadow-[0_0_60px_rgba(255,106,0,0.6)]">
-                <span className="relative z-10 transition-colors duration-500">Mudar o Padrão</span>
-                <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-2 transition-transform duration-500" />
-              </button>
+            {/* CALL TO ACTION (CTA - Monocromático Liquid Titanium) */}
+            <motion.div className="mt-12">
+              <motion.button 
+                onClick={() => router.push("/ia")}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="group relative inline-flex items-center justify-center px-8 md:px-12 py-4 md:py-5 rounded-full overflow-hidden shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 active:scale-95 cursor-pointer bg-white"
+              >
+                {/* Feixe de Luz Shimmer */}
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+                
+                {/* Borda reflexiva sutil */}
+                <div className="absolute inset-0 rounded-full border border-white/80 pointer-events-none" />
+
+                {/* Conteúdo com Tipografia Premium e Ícone Reativo */}
+                <div className="relative z-10 flex items-center space-x-3 text-black font-black tracking-[0.25em] uppercase text-xs md:text-sm">
+                  <span>Mudar o Padrão</span>
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-black/10 flex items-center justify-center group-hover:translate-x-1 group-hover:bg-black/20 transition-all duration-300">
+                    <ArrowRight className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
+                  </div>
+                </div>
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -981,40 +1059,87 @@ export default function Home() {
         {/* CONTEÚDO DO RODAPÉ (Flutuando sobre o holograma) */}
         <div className="w-full max-w-[1200px] mx-auto px-6 md:px-12 flex flex-col items-center z-10 mt-auto relative">
           
-          <h4 className="text-white text-xl md:text-2xl tracking-[0.4em] uppercase font-light mb-16 text-center drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+          <h4 className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500 text-2xl md:text-4xl font-black tracking-[0.3em] uppercase mb-16 text-center drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
             A Engenharia da Percepção
           </h4>
 
-          {/* Grid Institucional com Glassmorphism sutil */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 border-t border-white/10 pt-16 pb-12 bg-black/20 backdrop-blur-sm rounded-t-3xl px-8">
-            <div className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
-              <span className="text-zinc-500 font-mono text-[11px] tracking-[0.2em] uppercase">Navegação</span>
-              <a href="/" className="text-sm text-zinc-300 hover:text-white hover:tracking-wide transition-all duration-300">Início</a>
-              <a href="/ia" className="text-sm text-zinc-300 hover:text-white hover:tracking-wide transition-all duration-300">Fale com o Havi</a>
-              <a href="/ia" className="text-sm text-zinc-300 hover:text-white hover:tracking-wide transition-all duration-300">Solicitar Diagnóstico</a>
-              <a href="/links" className="text-sm text-zinc-300 hover:text-white hover:tracking-wide transition-all duration-300">Todos os Links</a>
+          {/* Card Liquid Glass do Rodapé */}
+          <div className="w-full relative p-8 md:p-14 rounded-[2.5rem] bg-[#080808]/85 border border-white/[0.08] backdrop-blur-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+            {/* Linha de reflexo sutil no topo do card */}
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 text-left">
+              {/* Coluna 1: Navegação */}
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-nex-orange/70" />
+                  <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Navegação</span>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <a href="/" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Início</a>
+                  <a href="/ia" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Fale com o Havi</a>
+                  <a href="/ia" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Solicitar Diagnóstico</a>
+                  <a href="/links" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Todos os Links</a>
+                </div>
+              </div>
+
+              {/* Coluna 2: Contato */}
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-nex-orange/70" />
+                  <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Contato</span>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <a href="mailto:falecom@nex.com.br" className="text-sm text-zinc-300 hover:text-white transition-colors">falecom@nex.com.br</a>
+                  <span className="text-sm text-zinc-400">São Paulo, SP — Brasil</span>
+                  <span className="text-xs font-mono text-zinc-500">Atendimento 24/7 via IA</span>
+                </div>
+              </div>
+
+              {/* Coluna 3: Social */}
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-nex-orange/70" />
+                  <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Social</span>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <a href="https://www.instagram.com/nex_flow_oficial?igsh=enF3cTEzazF1cTBx&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">Instagram</a>
+                  <a href="https://linkedin.com/company/nex" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">LinkedIn</a>
+                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">WhatsApp Direto</a>
+                </div>
+              </div>
+
+              {/* Coluna 4: Legal & Segurança */}
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-nex-orange/70" />
+                  <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Segurança & Legal</span>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <a href="/termos" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Termos de Uso</a>
+                  <a href="/privacidade" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Política de Privacidade</a>
+                  <span className="inline-flex items-center text-[10px] font-mono text-zinc-500 pt-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2" />
+                    LGPD Compliant
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
-              <span className="text-zinc-500 font-mono text-[11px] tracking-[0.2em] uppercase">Contato</span>
-              <a href="mailto:falecom@nex.com.br" className="text-sm text-zinc-300 hover:text-white transition-colors">falecom@nex.com.br</a>
-              <span className="text-sm text-zinc-300">São Paulo, SP</span>
+            {/* Assinatura Final Embutida no Card */}
+            <div className="w-full flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-zinc-500 tracking-[0.1em] uppercase border-t border-white/5 pt-8 mt-10">
+              <span>&copy; {new Date().getFullYear()} NEX. Todos os direitos reservados.</span>
+              <div className="mt-4 md:mt-0 flex items-center space-x-4">
+                <a href="/termos" className="hover:text-zinc-300 transition-colors">Termos</a>
+                <span>•</span>
+                <a href="/privacidade" className="hover:text-zinc-300 transition-colors">Privacidade</a>
+                <span>•</span>
+                <span className="flex items-center bg-white/[0.03] px-3 py-1 rounded-full border border-white/5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-2 shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                  Estabilidade Máxima
+                </span>
+              </div>
             </div>
-
-            <div className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
-              <span className="text-zinc-500 font-mono text-[11px] tracking-[0.2em] uppercase">Social</span>
-              <a href="https://instagram.com/suaconta" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-300 hover:text-nex-orange hover:tracking-wide transition-all duration-300">Instagram</a>
-              <a href="https://linkedin.com/company/nex" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-300 hover:text-nex-orange hover:tracking-wide transition-all duration-300">LinkedIn</a>
-            </div>
-          </div>
-
-          {/* Assinatura Final */}
-          <div className="w-full flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-zinc-500 tracking-[0.1em] uppercase border-t border-white/5 pt-8 pb-4">
-            <span>&copy; {new Date().getFullYear()} NEX. Todos os direitos reservados.</span>
-            <span className="mt-4 md:mt-0 flex items-center bg-white/[0.03] px-3 py-1.5 rounded-full border border-white/5">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-2 shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
-              Operando em estabilidade máxima
-            </span>
           </div>
 
         </div>
@@ -1059,19 +1184,12 @@ function StackedMethodCards() {
   ];
 
   return (
-    <div className="relative w-full max-w-[900px] mx-auto flex flex-col gap-6 md:gap-0 md:pb-[30vh] mt-10 z-30">
+    <div className="relative w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 z-30">
       {methods.map((item, index) => {
-        // Offset progressivo para o sticky formar um 'baralho'
-        const topOffset = `calc(20vh + ${index * 30}px)`;
-        
         return (
           <motion.div 
             key={index}
-            className="group relative p-6 md:p-8 rounded-[2rem] bg-[#0A0A0A]/90 border border-white/[0.04] backdrop-blur-3xl overflow-hidden shadow-[0_-15px_40px_rgba(0,0,0,0.4)] md:sticky transition-all duration-700 hover:bg-[#0C0C0C] hover:border-white/[0.08]"
-            style={{ 
-              top: topOffset,
-              zIndex: 10 + index
-            }}
+            className="group relative p-6 md:p-8 rounded-[2rem] bg-[#0A0A0A]/90 border border-white/[0.04] backdrop-blur-3xl overflow-hidden shadow-[0_-15px_40px_rgba(0,0,0,0.4)] transition-all duration-700 hover:bg-[#0C0C0C] hover:border-white/[0.08] hover:-translate-y-2"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -1080,7 +1198,7 @@ function StackedMethodCards() {
             {/* Linha reflexo no topo */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/[0.1] to-transparent opacity-50" />
             
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <div className="flex flex-col items-start gap-6">
               <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-center shrink-0 group-hover:bg-white/[0.05] transition-all duration-500 shadow-[inset_0_0_15px_rgba(255,255,255,0.02)]">
                 <item.icon className="w-5 h-5 text-zinc-500 group-hover:text-white transition-colors duration-500" />
               </div>

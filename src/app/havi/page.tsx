@@ -6,6 +6,7 @@ import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } fr
 import { Zap, Target, Brain, ArrowRight, MessageSquare, Search, Shield, Rocket, Activity } from "lucide-react";
 import React, { MouseEvent, useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
+import { IAChatInterface } from "@/components/IAChatInterface";
 
 export default function HaviPage() {
   const mouseX = useMotionValue(0);
@@ -37,6 +38,18 @@ export default function HaviPage() {
 
   const [activeSection, setActiveSection] = useState(1);
 
+  // Feixes de luz que sobem (Data Streams da cor da marca)
+  const [lightBeams, setLightBeams] = useState<Array<{left: string, height: string, duration: number, delay: number}>>([]);
+
+  useEffect(() => {
+    setLightBeams(Array.from({ length: 35 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      height: `${Math.random() * 40 + 20}%`,
+      duration: Math.random() * 12 + 10,
+      delay: Math.random() * 10,
+    })));
+  }, []);
+
   return (
     <main 
       onMouseMove={handleMouseMove}
@@ -44,8 +57,42 @@ export default function HaviPage() {
     >
       <Navbar />
 
+      {/* CAMADA FIXA DE FUNDO: IMAGEM + LUZES + RISCOS SUBINDO */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Imagem de Fundo Oficial NEX */}
+        <div 
+          className="absolute inset-0 w-full h-full opacity-25 mix-blend-screen"
+          style={{ backgroundImage: "url('/fundo.jpeg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-transparent to-[#030303] opacity-80" />
+
+        {/* Feixes de Luz / Riscos Subindo na Cor da Marca (Data Streams) */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
+          {lightBeams.map((beam, i) => (
+            <motion.div
+              key={i}
+              className="absolute bottom-0 w-[1px] bg-gradient-to-t from-transparent via-[#FF6A00]/50 to-transparent"
+              style={{
+                left: beam.left,
+                height: beam.height,
+              }}
+              animate={{
+                y: ["100%", "-200%"],
+                opacity: [0, 1, 0]
+              }}
+              transition={{
+                duration: beam.duration,
+                repeat: Infinity,
+                ease: "linear",
+                delay: beam.delay,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* CONTAINER PRINCIPAL */}
-      <div className="relative w-full">
+      <div className="relative w-full z-10">
         
         {/* VIEWPORT FIXO: HAVI E FUNDO */}
         <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center pointer-events-none">
@@ -258,7 +305,7 @@ export default function HaviPage() {
           {/* SEÇÃO 4: SEGURANÇA (Shield) */}
           <motion.div 
             onViewportEnter={() => setActiveSection(4)}
-            viewport={{ amount: 0.5 }}
+            viewport={{ amount: 0.4 }}
             className="min-h-screen w-full flex items-end lg:items-center justify-center max-w-[1440px] mx-auto lg:px-6 pb-24 lg:py-24 pointer-events-none"
           >
             <div className="w-full flex justify-end">
@@ -286,6 +333,34 @@ export default function HaviPage() {
 
         </div>
       </div>
+
+      {/* SEÇÃO 5: TERMINAL INTERATIVO COM A IA (Abaixo do bloco do Havi) */}
+      <section className="relative w-full z-30 min-h-screen flex flex-col items-center justify-center px-4 md:px-8 py-24">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="w-full max-w-[1200px] flex flex-col items-center justify-center mx-auto"
+        >
+          {/* Header com chamada direta */}
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-nex-orange/30 bg-nex-orange/10 backdrop-blur-sm mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-nex-orange animate-ping" />
+              <span className="text-[10px] font-mono text-nex-orange tracking-[0.2em] uppercase">HAVI OS • ACESSO IMEDIATO</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white uppercase mb-2">
+              Experimente a <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF6A00] to-[#FF9040]">Inteligência NEX.</span>
+            </h2>
+            <p className="text-xs md:text-sm text-zinc-400 font-light max-w-md">
+              Interaja com o Havi, gere planos de ação e faça diagnósticos em tempo real.
+            </p>
+          </div>
+
+          {/* Componente Modular Oficial da IA */}
+          <IAChatInterface embedded onBackToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
+        </motion.div>
+      </section>
     </main>
   );
 }

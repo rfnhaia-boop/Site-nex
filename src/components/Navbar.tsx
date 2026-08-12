@@ -66,7 +66,8 @@ export function Navbar() {
               <a 
                 key={idx} 
                 href={link.href}
-                className="text-sm font-medium text-zinc-400 hover:text-white transition-colors tracking-wide"
+                translate="no"
+                className="notranslate text-sm font-medium text-zinc-400 hover:text-white transition-colors tracking-wide"
               >
                 {link.label}
               </a>
@@ -119,10 +120,11 @@ export function Navbar() {
                   key={idx}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
+                  translate="no"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + idx * 0.1 }}
-                  className="text-3xl font-light text-zinc-300 hover:text-white"
+                  className="notranslate text-3xl font-light text-zinc-300 hover:text-white"
                 >
                   {link.label}
                 </motion.a>

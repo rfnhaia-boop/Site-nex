@@ -268,10 +268,10 @@ export default function LinksPage() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="flex items-center gap-5 mb-8"
             >
-              <SocialButton href="https://wa.me/seunumerohere" label="WhatsApp">
+              <SocialButton href="https://wa.me/5511936202934" label="WhatsApp">
                 <WhatsAppIcon />
               </SocialButton>
-              <SocialButton href="https://instagram.com/suaconta" label="Instagram">
+              <SocialButton href="https://www.instagram.com/nex_flow_oficial?igsh=enF3cTEzazF1cTBx&utm_source=qr" label="Instagram">
                 <InstagramIcon />
               </SocialButton>
               <SocialButton href="https://linkedin.com/company/nex" label="LinkedIn">
