@@ -47,10 +47,11 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
   const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const composerWrapperRef = useRef<HTMLDivElement>(null);
+  const [loginToast, setLoginToast] = useState(false);
 
-  // Login com Google faz redirect completo (sai do site e volta) -- ao voltar já
-  // autenticado, retoma a conversa sozinho em vez de deixar o visitante travado
-  // esperando alguma reação depois de logar.
+  // Login com Google às vezes completa sozinho e rápido demais pra dar pra ver
+  // (conta já autorizou o app antes) -- sem esse aviso, o botão só troca de
+  // "Entrar com Google" pra um ícone pequeno e parece que não aconteceu nada.
   useEffect(() => {
     if (status !== "authenticated") return;
     let hasPendingResume = false;
@@ -65,9 +66,12 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
     } catch {
       // ignora
     }
+    setLoginToast(true);
+    const timer = setTimeout(() => setLoginToast(false), 4000);
     if (messages.length > 0) {
       sendMessage("Pronto, acabei de fazer login com Google.");
     }
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
@@ -141,7 +145,20 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
 
   return (
     <div className={`relative z-10 w-full ${embedded ? 'h-[750px] max-w-5xl rounded-[2.5rem] border border-white/[0.08] bg-[#050505]/90 backdrop-blur-3xl shadow-[0_20px_70px_rgba(0,0,0,0.8)]' : 'h-full max-w-6xl rounded-[2rem] md:rounded-[2.5rem] border border-white/[0.03] bg-transparent backdrop-blur-[2px]'} flex flex-col overflow-hidden`}>
-      
+
+      {/* Aviso de login -- o Google às vezes completa o redirect rápido demais
+          pra dar pra ver, então sem isso parece que o botão não fez nada. */}
+      {loginToast && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-xs font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl whitespace-nowrap"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          Login feito! Conectado como {session?.user?.name || session?.user?.email}
+        </motion.div>
+      )}
+
       {/* Top Header */}
       <header className="w-full h-20 px-6 md:px-10 flex justify-between items-center border-b border-white/[0.04]">
         <div className="flex items-center gap-4">

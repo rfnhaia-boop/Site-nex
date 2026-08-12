@@ -191,13 +191,14 @@ export default function LinksPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const hasStarted = messages.length > 0;
+  const [loginToast, setLoginToast] = useState(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Login com Google faz redirect completo (sai do site e volta) -- ao voltar já
-  // autenticado, retoma a conversa sozinho em vez de deixar o visitante travado.
+  // Login com Google às vezes completa sozinho e rápido demais pra dar pra ver
+  // (conta já autorizou o app antes) -- sem esse aviso, parece que não aconteceu nada.
   useEffect(() => {
     if (status !== "authenticated") return;
     let hasPendingResume = false;
@@ -212,9 +213,12 @@ export default function LinksPage() {
     } catch {
       // ignora
     }
+    setLoginToast(true);
+    const timer = setTimeout(() => setLoginToast(false), 4000);
     if (messages.length > 0) {
       sendMessage("Pronto, acabei de fazer login com Google.");
     }
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
@@ -235,6 +239,19 @@ export default function LinksPage() {
 
   return (
     <main className="h-[100dvh] w-full font-sans text-nex-white flex flex-col items-center px-6 py-8 md:py-12 relative overflow-hidden">
+
+      {/* Aviso de login -- o Google às vezes completa o redirect rápido demais
+          pra dar pra ver, então sem isso parece que o botão não fez nada. */}
+      {loginToast && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-xs font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl whitespace-nowrap"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          Login feito! Conectado como {session?.user?.name || session?.user?.email}
+        </motion.div>
+      )}
 
       {/* BACKGROUND RESPONSIVO (Mobile = Fundo Fotográfico, Desktop = Neon Radial da IA) */}
       <div className="fixed inset-0 z-0 pointer-events-none bg-[#050505]">
