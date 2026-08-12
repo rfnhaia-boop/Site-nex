@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { streamText } from 'ai';
 import { geminiModel } from '@/lib/agent/gemini';
+import { groqModel } from '@/lib/agent/groq';
 import { buildSystemPrompt } from '@/lib/agent/systemPrompt';
 import { extractAndSaveLead } from '@/lib/agent/leadIntelligence';
 import { extractAnalysisFields, triggerNexOsAnalysis } from '@/lib/agent/nexOsAnalysis';
@@ -110,17 +111,47 @@ export async function POST(request) {
     authenticated: Boolean(authenticated),
   });
 
-  const result = streamText({
-    model: geminiModel,
-    system: systemPrompt,
-    messages,
-    onFinish: async ({ text }) => {
-      if (text) {
+  const encoder = new TextEncoder();
+
+  // O Gemini free tier tem cota diária curta e, quando estoura, a chamada não
+  // lança erro -- ela só volta com stream vazio. Por isso não dá pra confiar em
+  // try/catch sozinho: tentamos o Gemini primeiro (streaming de verdade pro
+  // cliente) e, se ele terminar sem produzir nenhum texto, caímos pro Groq sem o
+  // visitante perceber (nada foi enviado ainda nesse caso).
+  const stream = new ReadableStream({
+    async start(controller) {
+      let finalText = '';
+
+      try {
+        const primary = streamText({ model: geminiModel, system: systemPrompt, messages });
+        for await (const chunk of primary.textStream) {
+          finalText += chunk;
+          controller.enqueue(encoder.encode(chunk));
+        }
+      } catch {
+        finalText = '';
+      }
+
+      if (!finalText.trim() && process.env.GROQ_API_KEY) {
+        try {
+          const fallback = streamText({ model: groqModel, system: systemPrompt, messages });
+          for await (const chunk of fallback.textStream) {
+            finalText += chunk;
+            controller.enqueue(encoder.encode(chunk));
+          }
+        } catch {
+          // Nenhum dos dois respondeu -- fecha vazio, o cliente mostra o erro amigável.
+        }
+      }
+
+      controller.close();
+
+      if (finalText.trim()) {
         await prisma.chatMessage.create({
-          data: { sessionId, role: 'assistant', content: text },
+          data: { sessionId, role: 'assistant', content: finalText },
         });
 
-        const fullConversation = [...messages, { role: 'assistant', content: text }];
+        const fullConversation = [...messages, { role: 'assistant', content: finalText }];
         const userTurns = messages.filter((m) => m.role === 'user').length;
         if (userTurns >= 2) {
           await extractAndSaveLead({ sessionId, messages: fullConversation });
@@ -136,5 +167,7 @@ export async function POST(request) {
     },
   });
 
-  return result.toTextStreamResponse();
+  return new Response(stream, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
 }

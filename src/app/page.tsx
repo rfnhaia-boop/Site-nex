@@ -1092,7 +1092,7 @@ export default function Home() {
                 <div className="flex flex-col space-y-3">
                   <a href="mailto:new.flow.sys@gmail.com" className="text-sm text-zinc-300 hover:text-white transition-colors">new.flow.sys@gmail.com</a>
                   <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-300 hover:text-white transition-colors">(11) 93620-2934</a>
-                  <span className="text-sm text-zinc-400">São Paulo, SP — Brasil</span>
+                  <span className="text-sm text-zinc-400">Jundiaí, SP — Brasil</span>
                   <span className="text-xs font-mono text-zinc-500">Atendimento 24/7 via IA</span>
                 </div>
               </div>
