@@ -75,6 +75,10 @@ export function useRaviChat(currentPage: string, defaultSection = "") {
         });
       }
 
+      if (!accumulated.trim()) {
+        throw new Error("Resposta vazia do Havi.");
+      }
+
       const { content: finalContent, quickReplies } = extractQuickReplies(accumulated);
       setMessages((prev) => {
         const updated = [...prev];
