@@ -38,6 +38,30 @@ export default function HaviPage() {
 
   const [activeSection, setActiveSection] = useState(1);
 
+  // Carrossel mobile da Seção 3: rastreia qual card está em foco pra acender a bolinha certa.
+  const MOBILE_CARD_COUNT = 6;
+  const MOBILE_CARD_COUNT_ARRAY = Array.from({ length: MOBILE_CARD_COUNT }, (_, i) => i);
+  const [activeCard, setActiveCard] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  function handleCarouselScroll() {
+    const el = carouselRef.current;
+    if (!el) return;
+    const scrollCenter = el.scrollLeft + el.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDist = Infinity;
+    Array.from(el.children).forEach((child, i) => {
+      const c = child as HTMLElement;
+      const childCenter = c.offsetLeft + c.offsetWidth / 2;
+      const dist = Math.abs(childCenter - scrollCenter);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIndex = i;
+      }
+    });
+    setActiveCard(closestIndex);
+  }
+
   // Feixes de luz que sobem (Data Streams da cor da marca)
   const [lightBeams, setLightBeams] = useState<Array<{left: string, height: string, duration: number, delay: number}>>([]);
 
@@ -286,19 +310,33 @@ export default function HaviPage() {
             </div>
             
             {/* Mobile Horizontal Carousel */}
-            <div 
-              className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 relative z-40 pointer-events-auto w-full px-6 pt-10 pb-12"
+            <style dangerouslySetInnerHTML={{__html: `
+              .md\\:hidden::-webkit-scrollbar { display: none; }
+            `}} />
+            <div
+              ref={carouselRef}
+              onScroll={handleCarouselScroll}
+              className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 relative z-40 pointer-events-auto w-full px-6 pt-10 pb-6"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <style dangerouslySetInnerHTML={{__html: `
-                .md\\:hidden::-webkit-scrollbar { display: none; }
-              `}} />
-              
               <FloatingCard mobile delay={0.2} icon={Rocket} title="VOANDO" desc="Explorando novas possibilidades." />
               <FloatingCard mobile delay={0.3} icon={MessageSquare} title="INTERAGINDO" desc="Conectando e conversando com você." />
               <FloatingCard mobile delay={0.4} icon={Zap} title="EXECUTANDO" desc="Transformando ideias em ação." />
-              <FloatingCard mobile delay={0.5} icon={Shield} title="PROTEGENDO" desc="Segurança e confiança." />
-              <FloatingCard mobile delay={0.6} icon={Activity} title="SEMPRE ATIVO" desc="Monitorando, aprendendo e evoluindo 24h." badge="24H" />
+              <FloatingCard mobile delay={0.5} icon={Search} title="ANALISANDO" desc="Processando dados para gerar insights." />
+              <FloatingCard mobile delay={0.6} icon={Shield} title="PROTEGENDO" desc="Segurança e confiança." />
+              <FloatingCard mobile delay={0.7} icon={Activity} title="SEMPRE ATIVO" desc="Monitorando, aprendendo e evoluindo 24h." badge="24H" />
+            </div>
+
+            {/* Indicador de posição (mobile) */}
+            <div className="md:hidden flex items-center justify-center gap-1.5 relative z-40 pointer-events-none pb-6">
+              {MOBILE_CARD_COUNT_ARRAY.map((i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === activeCard ? 'w-5 bg-[#FF6A00]' : 'w-1.5 bg-white/20'
+                  }`}
+                />
+              ))}
             </div>
           </motion.div>
 
@@ -420,7 +458,7 @@ function FloatingCard({ delay, top, left, right, bottom, icon: Icon, title, desc
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: false, margin: "-100px" }}
       transition={{ duration: 0.8, delay, type: "spring", bounce: 0.4 }}
-      className={mobile ? "relative w-[80vw] sm:w-[300px] shrink-0 snap-center" : "absolute"}
+      className={mobile ? "relative w-[72vw] sm:w-[280px] shrink-0 snap-center" : "absolute"}
       style={!mobile ? { top, left, right, bottom } : {}}
     >
       <GlassPanel className={`flex items-start gap-3 sm:gap-4 w-full hover:border-[#FF6A00]/30 hover:scale-105 transition-all cursor-default group mx-auto ${mobile ? 'p-4' : 'p-4 sm:p-5 max-w-[280px]'}`}>

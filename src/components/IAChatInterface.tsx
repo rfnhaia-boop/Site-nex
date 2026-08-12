@@ -43,6 +43,17 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
   const isGuest = status !== "authenticated";
 
   const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const composerWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Rola o histórico interno pro fim E traz o composer pra vista na página --
+  // no /havi o chat fica embutido numa página longa, então só rolar o histórico
+  // interno não é suficiente: o composer pode continuar cortado fora da tela.
+  useEffect(() => {
+    const inner = messagesContainerRef.current;
+    if (inner) inner.scrollTop = inner.scrollHeight;
+    composerWrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages]);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -160,8 +171,8 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
           </div>
         </div>
         
-        <div className="flex items-center gap-4 md:gap-6">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+        <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
             <span className="text-white/60 text-xs font-medium uppercase tracking-wider">
               {isGuest ? "Convidado" : session?.user?.name || "Conectado"}
@@ -198,7 +209,7 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
       </header>
 
       {/* Center Content */}
-      <div className="flex-1 flex flex-col items-center px-6 w-full max-w-4xl mx-auto overflow-y-auto custom-scrollbar pt-8">
+      <div ref={messagesContainerRef} className="flex-1 flex flex-col items-center px-6 w-full max-w-4xl mx-auto overflow-y-auto custom-scrollbar pt-8">
         {!hasStarted ? (
           <div className="flex-1 flex flex-col items-center justify-center w-full">
             <motion.div
@@ -265,7 +276,7 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
       </div>
 
       {/* Input Composer */}
-      <div className="w-full max-w-4xl mx-auto px-6 mb-6 mt-auto shrink-0 relative">
+      <div ref={composerWrapperRef} className="w-full max-w-4xl mx-auto px-6 mb-6 mt-auto shrink-0 relative">
         <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-[10px] bg-nex-orange/40 blur-[20px] rounded-[100%] pointer-events-none" />
 
         <ChatComposer
