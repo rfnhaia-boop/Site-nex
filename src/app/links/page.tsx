@@ -6,10 +6,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Activity,
-  MessageSquare,
-  Zap,
-  Search,
+  Target,
+  HelpCircle,
+  Filter,
+  ScanSearch,
   ArrowLeft,
   Sparkles,
   Rocket
@@ -295,29 +295,9 @@ export default function LinksPage() {
                   className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
                 >
                   <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
-                    <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Estratégia</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => startSkill("Tenho uma dúvida específica sobre a NEX.", "")}
-                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
-                >
-                  <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
-                    <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </div>
-                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Respostas</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => startSkill("Quero entender como a NEX pode automatizar processos da minha empresa com IA.", "")}
-                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
-                >
-                  <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
-                    <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </div>
-                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Automação</span>
+                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Crescimento</span>
                 </button>
                 <button
                   type="button"
@@ -325,9 +305,29 @@ export default function LinksPage() {
                   className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
                 >
                   <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
-                    <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <ScanSearch className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Insights</span>
+                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Análise</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => startSkill("Quero entender onde meu funil de vendas está perdendo clientes.", "raio-x-funil")}
+                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
+                >
+                  <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
+                    <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  </div>
+                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Raio-X</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => startSkill("Tenho uma dúvida específica sobre a NEX.", "")}
+                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
+                >
+                  <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
+                    <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  </div>
+                  <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Dúvidas</span>
                 </button>
               </div>
 
