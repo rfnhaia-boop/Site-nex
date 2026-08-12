@@ -206,7 +206,7 @@ export default function LinksPage() {
   }
 
   return (
-    <main className="min-h-screen w-full font-sans text-nex-white flex flex-col items-center px-6 py-8 md:py-12 relative overflow-hidden">
+    <main className="h-[100dvh] w-full font-sans text-nex-white flex flex-col items-center px-6 py-8 md:py-12 relative overflow-hidden">
 
       {/* BACKGROUND RESPONSIVO (Mobile = Fundo Fotográfico, Desktop = Neon Radial da IA) */}
       <div className="fixed inset-0 z-0 pointer-events-none bg-[#050505]">
@@ -237,7 +237,8 @@ export default function LinksPage() {
         </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-md flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-md flex-1 min-h-0 flex flex-col items-center">
+        <div className="w-full flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col items-center">
         {!hasStarted ? (
           <>
             {/* Logo + subtítulo minimalista */}
@@ -288,30 +289,46 @@ export default function LinksPage() {
             >
               {/* Skills Grid (4 colunas super minimalistas em 1 linha) */}
               <div className="w-full grid grid-cols-4 gap-2 mb-4">
-                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group cursor-default text-center">
+                <button
+                  type="button"
+                  onClick={() => startSkill("Quero um plano de crescimento prático pra minha empresa.", "plano-crescimento")}
+                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
+                >
                   <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
                     <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Estratégia</span>
-                </div>
-                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group cursor-default text-center">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => startSkill("Tenho uma dúvida específica sobre a NEX.", "")}
+                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
+                >
                   <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
                     <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Respostas</span>
-                </div>
-                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group cursor-default text-center">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => startSkill("Quero entender como a NEX pode automatizar processos da minha empresa com IA.", "")}
+                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
+                >
                   <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
                     <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Automação</span>
-                </div>
-                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group cursor-default text-center">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => startSkill("Quero uma análise real de como minha empresa está posicionada digitalmente e onde a IA pode ajudar.", "analise-ia")}
+                  className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[1rem] p-2 sm:p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/[0.06] hover:border-white/20 transition-all shadow-[0_5px_15px_rgba(0,0,0,0.2)] group text-center"
+                >
                   <div className="w-8 h-8 rounded-full bg-nex-orange/10 flex items-center justify-center text-nex-orange group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(255,106,0,0.1)] group-hover:shadow-[0_0_15px_rgba(255,106,0,0.3)] shrink-0">
                     <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <span className="text-zinc-300 text-[9px] sm:text-[10px] font-semibold leading-none tracking-wide group-hover:text-white transition-colors">Insights</span>
-                </div>
+                </button>
               </div>
 
               <LinkCard
@@ -357,7 +374,7 @@ export default function LinksPage() {
               </button>
               <span className="text-sm font-medium text-zinc-300 tracking-wide">Havi · NEX AI</span>
             </div>
-            <div className="w-full flex flex-col gap-4 max-h-[60vh] overflow-y-auto pb-2 scrollbar-hide">
+            <div className="w-full flex flex-col gap-4 pb-2">
               <ChatBubble role="assistant" content={HAVI_GREETING} />
               {messages.map((m, i) => (
                 <ChatBubble
@@ -373,13 +390,14 @@ export default function LinksPage() {
             </div>
           </div>
         )}
+        </div>
 
         {/* Composer Expandido (IA Style) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full"
+          className="relative w-full shrink-0"
         >
           <ChatComposer 
             value={message}
@@ -401,7 +419,7 @@ export default function LinksPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="flex items-center gap-2 mt-8 text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-medium"
+          className="flex items-center gap-2 mt-3 mb-1 shrink-0 text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-medium"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6B00] opacity-75"></span>
