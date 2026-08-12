@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type ChatMessage = {
   role: "user" | "assistant" | "error";
@@ -30,9 +30,41 @@ function stripPartialMarker(text: string): string {
   return text;
 }
 
-export function useRaviChat(currentPage: string, defaultSection = "") {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+function storageKey(currentPage: string) {
+  return `havi_chat_${currentPage}`;
+}
+
+// Login com Google navega pra fora do site e volta (redirect completo, sem popup),
+// o que remonta o componente e perderia a conversa em memória -- guardamos no
+// sessionStorage antes de sair e restauramos ao voltar.
+function loadPersisted(currentPage: string): ChatMessage[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = sessionStorage.getItem(storageKey(currentPage));
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function useRaviChat(currentPage: string, defaultSection = "", isAuthenticated = false) {
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadPersisted(currentPage));
   const [isStreaming, setIsStreaming] = useState(false);
+  const isAuthenticatedRef = useRef(isAuthenticated);
+  isAuthenticatedRef.current = isAuthenticated;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (messages.length === 0) {
+        sessionStorage.removeItem(storageKey(currentPage));
+      } else {
+        sessionStorage.setItem(storageKey(currentPage), JSON.stringify(messages));
+      }
+    } catch {
+      // sessionStorage indisponível (modo privado etc) -- sem persistência, sem problema.
+    }
+  }, [messages, currentPage]);
 
   async function sendMessage(text: string, sectionOverride?: string) {
     const trimmed = text.trim();
@@ -51,6 +83,7 @@ export function useRaviChat(currentPage: string, defaultSection = "") {
           messages: nextMessages.map(({ role, content }) => ({ role, content })),
           currentPage,
           currentSection,
+          authenticated: isAuthenticatedRef.current,
         }),
       });
 

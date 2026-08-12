@@ -12,11 +12,15 @@ import {
   ScanSearch,
   ArrowLeft,
   Sparkles,
-  Rocket
+  Rocket,
+  LogOut
 } from "lucide-react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useRaviChat } from "@/lib/useRaviChat";
 import DiagnosticFlow from "@/components/DiagnosticFlow";
 import ChatComposer from "@/components/ChatComposer";
+
+const RESUME_AFTER_LOGIN_KEY = "havi_post_login_resume_links";
 
 // Ícones
 function WhatsAppIcon() {
@@ -180,7 +184,9 @@ export default function LinksPage() {
   const [message, setMessage] = useState("");
   const [diagnosticOpen, setDiagnosticOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("");
-  const { messages, isStreaming, sendMessage, reset } = useRaviChat("links", currentSection);
+  const { data: session, status } = useSession();
+  const isGuest = status !== "authenticated";
+  const { messages, isStreaming, sendMessage, reset } = useRaviChat("links", currentSection, !isGuest);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -189,6 +195,28 @@ export default function LinksPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Login com Google faz redirect completo (sai do site e volta) -- ao voltar já
+  // autenticado, retoma a conversa sozinho em vez de deixar o visitante travado.
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    let hasPendingResume = false;
+    try {
+      hasPendingResume = sessionStorage.getItem(RESUME_AFTER_LOGIN_KEY) === "1";
+    } catch {
+      // sessionStorage indisponível -- sem retomada automática, sem problema.
+    }
+    if (!hasPendingResume) return;
+    try {
+      sessionStorage.removeItem(RESUME_AFTER_LOGIN_KEY);
+    } catch {
+      // ignora
+    }
+    if (messages.length > 0) {
+      sendMessage("Pronto, acabei de fazer login com Google.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -364,15 +392,41 @@ export default function LinksPage() {
           </>
         ) : (
           <div className="w-full flex flex-col mb-6 mt-8 md:mt-12">
-            <div className="flex items-center gap-3 mb-6">
-              <button
-                onClick={reset}
-                aria-label="Voltar"
-                className="w-9 h-9 rounded-full flex items-center justify-center bg-white/[0.04] border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <span className="text-sm font-medium text-zinc-300 tracking-wide">Havi · NEX AI</span>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={reset}
+                  aria-label="Voltar"
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-white/[0.04] border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <span className="text-sm font-medium text-zinc-300 tracking-wide">Havi · NEX AI</span>
+              </div>
+
+              {isGuest ? (
+                <button
+                  onClick={() => {
+                    try {
+                      sessionStorage.setItem(RESUME_AFTER_LOGIN_KEY, "1");
+                    } catch {
+                      // ignora
+                    }
+                    signIn("google");
+                  }}
+                  className="px-3 py-1.5 rounded-full bg-nex-orange/10 border border-nex-orange/30 text-nex-orange text-xs font-semibold hover:bg-nex-orange hover:text-black transition-all"
+                >
+                  Entrar com Google
+                </button>
+              ) : (
+                <button
+                  onClick={() => signOut()}
+                  className="w-9 h-9 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-all"
+                  title="Sair"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              )}
             </div>
             <div className="w-full flex flex-col gap-4 pb-2">
               <ChatBubble role="assistant" content={HAVI_GREETING} />

@@ -31,7 +31,7 @@ export async function POST(request) {
   }
 
   const body = await request.json().catch(() => null);
-  const { messages, currentPage, currentSection } = body ?? {};
+  const { messages, currentPage, currentSection, authenticated } = body ?? {};
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return new Response(JSON.stringify({ error: 'messages é obrigatório' }), {
@@ -107,6 +107,7 @@ export async function POST(request) {
     currentPage: currentPage ?? session.currentPage,
     currentSection: effectiveSection,
     leadContext: lead,
+    authenticated: Boolean(authenticated),
   });
 
   const result = streamText({
@@ -125,7 +126,7 @@ export async function POST(request) {
           await extractAndSaveLead({ sessionId, messages: fullConversation });
         }
 
-        if (effectiveSection === 'analise-ia') {
+        if (effectiveSection === 'analise-ia' && authenticated) {
           const fields = await extractAnalysisFields(fullConversation);
           if (fields?.ready) {
             triggerNexOsAnalysis(sessionId, fields);

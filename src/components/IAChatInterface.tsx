@@ -27,6 +27,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 const HAVI_GREETING =
   "Olá! Eu sou o Havi, a inteligência artificial especialista da NEX. Como posso ajudar a transformar seus processos hoje?";
 
+const RESUME_AFTER_LOGIN_KEY = "havi_post_login_resume_ia";
+
 interface IAChatInterfaceProps {
   embedded?: boolean;
   onBackToTop?: () => void;
@@ -42,9 +44,32 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
   const { data: session, status } = useSession();
   const isGuest = status !== "authenticated";
 
-  const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection);
+  const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection, !isGuest);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const composerWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Login com Google faz redirect completo (sai do site e volta) -- ao voltar já
+  // autenticado, retoma a conversa sozinho em vez de deixar o visitante travado
+  // esperando alguma reação depois de logar.
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    let hasPendingResume = false;
+    try {
+      hasPendingResume = sessionStorage.getItem(RESUME_AFTER_LOGIN_KEY) === "1";
+    } catch {
+      // sessionStorage indisponível -- sem retomada automática, sem problema.
+    }
+    if (!hasPendingResume) return;
+    try {
+      sessionStorage.removeItem(RESUME_AFTER_LOGIN_KEY);
+    } catch {
+      // ignora
+    }
+    if (messages.length > 0) {
+      sendMessage("Pronto, acabei de fazer login com Google.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   // Rola o histórico interno pro fim E traz o composer pra vista na página --
   // no /havi o chat fica embutido numa página longa, então só rolar o histórico
@@ -181,7 +206,14 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
 
           {isGuest ? (
             <button
-              onClick={() => signIn("google")}
+              onClick={() => {
+                try {
+                  sessionStorage.setItem(RESUME_AFTER_LOGIN_KEY, "1");
+                } catch {
+                  // ignora
+                }
+                signIn("google");
+              }}
               className="px-4 py-1.5 rounded-full bg-nex-orange/10 border border-nex-orange/30 text-nex-orange text-xs font-semibold hover:bg-nex-orange hover:text-black transition-all"
             >
               Entrar com Google
