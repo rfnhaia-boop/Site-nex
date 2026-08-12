@@ -3,29 +3,18 @@
 import Image from "next/image";
 import { motion, useMotionValue, useTransform, useMotionTemplate } from "framer-motion";
 import {
-  User,
-  Phone,
   ArrowRight,
   ArrowLeft,
-  Settings,
-  X,
   Volume2,
   Thermometer,
   Cpu,
-  ChevronDown, 
-  Share, 
-  Target, 
-  ScanSearch, 
-  Filter, 
-  HelpCircle, 
-  Sparkles,
-  LogOut, 
-  CreditCard,
-  Lock, 
-  Eye, 
-  Check, 
-  MessageSquare, 
-  Upload,
+  ChevronDown,
+  Target,
+  ScanSearch,
+  Filter,
+  HelpCircle,
+  LogOut,
+  MessageSquare,
   ArrowUp
 } from "lucide-react";
 import DiagnosticFlow from "@/components/DiagnosticFlow";
@@ -33,6 +22,7 @@ import ChatComposer from "@/components/ChatComposer";
 import Link from "next/link";
 import { useState, useEffect, MouseEvent, useRef } from "react";
 import { useRaviChat } from "@/lib/useRaviChat";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const HAVI_GREETING =
   "Olá! Eu sou o Havi, a inteligência artificial especialista da NEX. Como posso ajudar a transformar seus processos hoje?";
@@ -49,14 +39,8 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
   const [currentSection, setCurrentSection] = useState("");
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [recordingTime, setRecordingTime] = useState("00:00");
-  const [showAuth, setShowAuth] = useState(false);
-  const [isGuest, setIsGuest] = useState(true);
-  const [isLoginMode, setIsLoginMode] = useState(true);
-  const [loginName, setLoginName] = useState("");
-  const [loginPhone, setLoginPhone] = useState("");
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [authNotice, setAuthNotice] = useState(false);
+  const { data: session, status } = useSession();
+  const isGuest = status !== "authenticated";
 
   const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection);
 
@@ -180,10 +164,27 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
             <span className="text-white/60 text-xs font-medium uppercase tracking-wider">
-              {isGuest ? "Convidado" : "Conectado"}
+              {isGuest ? "Convidado" : session?.user?.name || "Conectado"}
             </span>
           </div>
-          
+
+          {isGuest ? (
+            <button
+              onClick={() => signIn("google")}
+              className="px-4 py-1.5 rounded-full bg-nex-orange/10 border border-nex-orange/30 text-nex-orange text-xs font-semibold hover:bg-nex-orange hover:text-black transition-all"
+            >
+              Entrar com Google
+            </button>
+          ) : (
+            <button
+              onClick={() => signOut()}
+              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all hover:border-white/20"
+              title="Sair"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
+
           {embedded && (
             <Link
               href="/ia"
