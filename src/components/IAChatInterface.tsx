@@ -44,7 +44,7 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
   const { data: session, status } = useSession();
   const isGuest = status !== "authenticated";
 
-  const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection, !isGuest);
+  const { messages, isStreaming, sendMessage } = useRaviChat("ia", currentSection);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const composerWrapperRef = useRef<HTMLDivElement>(null);
 

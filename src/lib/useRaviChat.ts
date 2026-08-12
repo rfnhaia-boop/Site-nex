@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export type ChatMessage = {
   role: "user" | "assistant" | "error";
@@ -47,11 +47,9 @@ function loadPersisted(currentPage: string): ChatMessage[] {
   }
 }
 
-export function useRaviChat(currentPage: string, defaultSection = "", isAuthenticated = false) {
+export function useRaviChat(currentPage: string, defaultSection = "") {
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadPersisted(currentPage));
   const [isStreaming, setIsStreaming] = useState(false);
-  const isAuthenticatedRef = useRef(isAuthenticated);
-  isAuthenticatedRef.current = isAuthenticated;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -83,7 +81,6 @@ export function useRaviChat(currentPage: string, defaultSection = "", isAuthenti
           messages: nextMessages.map(({ role, content }) => ({ role, content })),
           currentPage,
           currentSection,
-          authenticated: isAuthenticatedRef.current,
         }),
       });
 

@@ -38,6 +38,9 @@ model Lead {
   id                String      @id @default(cuid())
   session           ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId         String      @unique
+  // E-mail verificado do login com Google -- diferente de "contato" (texto solto
+  // que a IA acha que leu na conversa, pode nao existir ou estar errado).
+  email             String      @default("")
   empresa           String      @default("")
   contato           String      @default("")
   contexto          String      @default("")

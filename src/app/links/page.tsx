@@ -186,7 +186,7 @@ export default function LinksPage() {
   const [currentSection, setCurrentSection] = useState("");
   const { data: session, status } = useSession();
   const isGuest = status !== "authenticated";
-  const { messages, isStreaming, sendMessage, reset } = useRaviChat("links", currentSection, !isGuest);
+  const { messages, isStreaming, sendMessage, reset } = useRaviChat("links", currentSection);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 

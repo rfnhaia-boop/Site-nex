@@ -7,6 +7,7 @@ import { extractAndSaveLead } from '@/lib/agent/leadIntelligence';
 import { extractAnalysisFields, triggerNexOsAnalysis } from '@/lib/agent/nexOsAnalysis';
 import { prisma } from '@/lib/prisma';
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
+import { auth } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -32,7 +33,12 @@ export async function POST(request) {
   }
 
   const body = await request.json().catch(() => null);
-  const { messages, currentPage, currentSection, authenticated } = body ?? {};
+  const { messages, currentPage, currentSection } = body ?? {};
+
+  // Verifica a sessão de verdade no servidor -- nunca confia numa flag "authenticated"
+  // mandada pelo próprio navegador (dava pra qualquer um forjar isso via fetch direto).
+  const authSession = await auth();
+  const authenticated = Boolean(authSession?.user?.email);
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return new Response(JSON.stringify({ error: 'messages é obrigatório' }), {
@@ -101,14 +107,25 @@ export async function POST(request) {
     data: { sessionId, role: 'user', content: lastMessage.content },
   });
 
-  const lead = await prisma.lead.findUnique({ where: { sessionId } });
+  let lead = await prisma.lead.findUnique({ where: { sessionId } });
   const effectiveSection = currentSection ?? session.currentSection;
+
+  // Captura o e-mail verificado do Google assim que a pessoa loga, em qualquer
+  // seção -- independe do que a extração por IA (best-effort) conseguir ler da
+  // conversa, então nunca falha por causa de instabilidade do modelo.
+  if (authenticated && authSession.user.email && lead?.email !== authSession.user.email) {
+    lead = await prisma.lead.upsert({
+      where: { sessionId },
+      create: { sessionId, email: authSession.user.email },
+      update: { email: authSession.user.email },
+    });
+  }
 
   const systemPrompt = buildSystemPrompt({
     currentPage: currentPage ?? session.currentPage,
     currentSection: effectiveSection,
     leadContext: lead,
-    authenticated: Boolean(authenticated),
+    authenticated,
   });
 
   const encoder = new TextEncoder();
