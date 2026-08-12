@@ -123,7 +123,7 @@ export default function PrivacidadePage() {
             </p>
             <div className="p-4 rounded-xl bg-white/[0.02] border border-nex-orange/30 inline-flex items-center space-x-3">
               <Mail className="w-4 h-4 text-nex-orange" />
-              <span className="text-sm font-mono text-white">falecom@nex.com.br</span>
+              <span className="text-sm font-mono text-white">new.flow.sys@gmail.com</span>
             </div>
           </section>
 
