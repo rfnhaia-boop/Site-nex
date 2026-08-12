@@ -152,7 +152,7 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute top-3 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-xs font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl whitespace-nowrap"
+          className="absolute top-24 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-xs font-semibold shadow-[0_10px_30px_rgba(0,0,0,0.4)] backdrop-blur-xl whitespace-nowrap"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
           Login feito! Conectado como {session?.user?.name || session?.user?.email}
