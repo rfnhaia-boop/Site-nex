@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Uma sessão por visitante do Agente NEX (cookie httpOnly, sem login).
+model ChatSession {
+  id             String   @id @default(cuid())
+  currentPage    String   @default("")
+  currentSection String   @default("")
+  // exploring | problem_aware | solution_seeking | project_ready | high_intent
+  qualification  String   @default("exploring")
+  criadoEm       DateTime @default(now())
+  atualizadoEm   DateTime @updatedAt
+
+  messages ChatMessage[]
+  lead     Lead?
+}
+
+// Histórico bruto da conversa — reinjetado como contexto a cada resposta.
+model ChatMessage {
+  id        String      @id @default(cuid())
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId String
+  role      String // "user" | "assistant"
+  content   String
+  criadoEm  DateTime    @default(now())
+
+  @@index([sessionId, criadoEm])
+}
+
+// Lead Intelligence — gerado só quando a conversa acumula contexto suficiente.
+model Lead {
+  id                String      @id @default(cuid())
+  session           ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId         String      @unique
+  empresa           String      @default("")
+  contato           String      @default("")
+  contexto          String      @default("")
+  problemaDeclarado String      @default("")
+  causaProvavel     String      @default("")
+  ferramentasAtuais String      @default("")
+  gargalos          String      @default("")
+  objetivo          String      @default("")
+  urgencia          String      @default("")
+  oportunidadeNex   String      @default("")
+  proximaAcao       String      @default("")
+  resumo            String      @default("")
+  criadoEm          DateTime    @default(now())
+}
