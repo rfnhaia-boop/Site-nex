@@ -38,7 +38,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   session: { strategy: "jwt" },
-  pages: {},
+  // Sem isso, qualquer fluxo que o NextAuth precise redirecionar sozinho (erro,
+  // ou /api/auth/signin acessado direto) caía na tela genérica dele em vez da
+  // nossa /login de verdade.
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
   trustHost: true,
   callbacks: {
     async jwt({ token, user }) {
