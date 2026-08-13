@@ -12,12 +12,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${SITE_URL}/havi`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${SITE_URL}/links`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     // /ia é ferramenta interativa (chat), não conteúdo — não entra no sitemap nem é indexada
-    // (ver robots: false em src/app/ia/layout.tsx).
+    // (ver robots: false em src/app/ia/layout.tsx). /login também não entra (robots: false).
   ];
 }

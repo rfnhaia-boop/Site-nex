@@ -10,8 +10,6 @@ const inter = Inter({
   weight: ["400", "600", "700", "900"],
 });
 
-// TODO(Rafael): trocar pelo domínio real antes do lançamento — hoje é só um placeholder.
-// Definir via env var em produção (NEXT_PUBLIC_SITE_URL) evita ter que mexer em código depois.
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nex.com.br";
 const SITE_NAME = "NEX — Estratégia. Tecnologia. Crescimento.";
 const SITE_DESCRIPTION =
