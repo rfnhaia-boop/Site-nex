@@ -20,9 +20,10 @@ import {
 import DiagnosticFlow from "@/components/DiagnosticFlow";
 import ChatComposer from "@/components/ChatComposer";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, MouseEvent, useRef } from "react";
 import { useRaviChat } from "@/lib/useRaviChat";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const HAVI_GREETING =
   "Olá! Eu sou o Havi, a inteligência artificial especialista da NEX. Como posso ajudar a transformar seus processos hoje?";
@@ -35,6 +36,7 @@ interface IAChatInterfaceProps {
 }
 
 export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfaceProps) {
+  const pathname = usePathname();
   const [inputText, setInputText] = useState("");
   const [showUploadMenu, setShowUploadMenu] = useState(false);
   const [showChatMenu, setShowChatMenu] = useState(false);
@@ -222,19 +224,12 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
           </div>
 
           {isGuest ? (
-            <button
-              onClick={() => {
-                try {
-                  sessionStorage.setItem(RESUME_AFTER_LOGIN_KEY, "1");
-                } catch {
-                  // ignora
-                }
-                signIn("google");
-              }}
-              className="px-4 py-1.5 rounded-full bg-nex-orange/10 border border-nex-orange/30 text-nex-orange text-xs font-semibold hover:bg-nex-orange hover:text-black transition-all"
+            <Link
+              href={`/login?returnTo=${encodeURIComponent(pathname)}`}
+              className="px-4 py-1.5 rounded-full bg-nex-orange/10 border border-nex-orange/30 text-nex-orange text-xs font-semibold hover:bg-nex-orange hover:text-black transition-all shadow-[0_0_15px_rgba(255,106,0,0.2)]"
             >
-              Entrar com Google
-            </button>
+              Entrar
+            </Link>
           ) : (
             <button
               onClick={() => signOut()}

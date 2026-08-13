@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Conta de verdade (e-mail + senha) -- separado do login com Google, que não
+// persiste usuário. Senha sempre com hash (bcrypt), nunca texto puro.
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @default("")
+  email        String   @unique
+  passwordHash String
+  criadoEm     DateTime @default(now())
+}
+
 // Uma sessão por visitante do Agente NEX (cookie httpOnly, sem login).
 model ChatSession {
   id             String   @id @default(cuid())

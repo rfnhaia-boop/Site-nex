@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -15,7 +16,7 @@ import {
   Rocket,
   LogOut
 } from "lucide-react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRaviChat } from "@/lib/useRaviChat";
 import DiagnosticFlow from "@/components/DiagnosticFlow";
 import ChatComposer from "@/components/ChatComposer";
@@ -422,19 +423,12 @@ export default function LinksPage() {
               </div>
 
               {isGuest ? (
-                <button
-                  onClick={() => {
-                    try {
-                      sessionStorage.setItem(RESUME_AFTER_LOGIN_KEY, "1");
-                    } catch {
-                      // ignora
-                    }
-                    signIn("google");
-                  }}
+                <Link
+                  href="/login?returnTo=%2Flinks"
                   className="px-3 py-1.5 rounded-full bg-nex-orange/10 border border-nex-orange/30 text-nex-orange text-xs font-semibold hover:bg-nex-orange hover:text-black transition-all"
                 >
-                  Entrar com Google
-                </button>
+                  Entrar
+                </Link>
               ) : (
                 <button
                   onClick={() => signOut()}

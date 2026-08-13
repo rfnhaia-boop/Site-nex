@@ -83,7 +83,11 @@ export function Navbar() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               
-              <button className="w-10 h-10 shrink-0 rounded-full bg-[#FF6A00] flex items-center justify-center text-black font-black text-sm tracking-widest hover:scale-105 hover:shadow-[0_0_25px_rgba(255,106,0,0.5)] transition-all duration-300 cursor-pointer">
+              <button 
+                onClick={() => router.push("/login")}
+                className="w-10 h-10 shrink-0 rounded-full bg-[#FF6A00] flex items-center justify-center text-black font-black text-sm tracking-widest hover:scale-105 hover:shadow-[0_0_25px_rgba(255,106,0,0.5)] transition-all duration-300 cursor-pointer"
+                title="Acessar Conta NEX"
+              >
                 RA
               </button>
             </div>
@@ -91,7 +95,11 @@ export function Navbar() {
 
           {/* MOBILE CONTROLS */}
           <div className="md:hidden flex items-center gap-3 relative z-50">
-            <button className="w-10 h-10 shrink-0 rounded-full bg-[#FF6A00] flex items-center justify-center text-black font-black text-sm tracking-widest hover:scale-105 hover:shadow-[0_0_25px_rgba(255,106,0,0.5)] transition-all duration-300 cursor-pointer">
+            <button 
+              onClick={() => router.push("/login")}
+              className="w-10 h-10 shrink-0 rounded-full bg-[#FF6A00] flex items-center justify-center text-black font-black text-sm tracking-widest hover:scale-105 hover:shadow-[0_0_25px_rgba(255,106,0,0.5)] transition-all duration-300 cursor-pointer"
+              title="Acessar Conta NEX"
+            >
               RA
             </button>
             <button 
