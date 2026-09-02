@@ -17,9 +17,9 @@ const MAX_MESSAGE_LENGTH = 4000;
 const MAX_MESSAGES_PER_REQUEST = 60;
 
 export async function POST(request) {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GROQ_API_KEY && !process.env.GEMINI_API_KEY) {
     return new Response(
-      JSON.stringify({ error: 'GEMINI_API_KEY não configurada no .env.local.' }),
+      JSON.stringify({ error: 'GROQ_API_KEY/GEMINI_API_KEY não configuradas no .env.local.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
@@ -130,17 +130,15 @@ export async function POST(request) {
 
   const encoder = new TextEncoder();
 
-  // O Gemini free tier tem cota diária curta e, quando estoura, a chamada não
-  // lança erro -- ela só volta com stream vazio. Por isso não dá pra confiar em
-  // try/catch sozinho: tentamos o Gemini primeiro (streaming de verdade pro
-  // cliente) e, se ele terminar sem produzir nenhum texto, caímos pro Groq sem o
-  // visitante perceber (nada foi enviado ainda nesse caso).
+  // Groq é a resposta principal (bem mais rápido) -- Gemini fica de reserva pra
+  // quando o Groq falhar ou voltar vazio, sem o visitante perceber a troca
+  // (nada foi enviado ainda nesse caso).
   const stream = new ReadableStream({
     async start(controller) {
       let finalText = '';
 
       try {
-        const primary = streamText({ model: geminiModel, system: systemPrompt, messages });
+        const primary = streamText({ model: groqModel, system: systemPrompt, messages });
         for await (const chunk of primary.textStream) {
           finalText += chunk;
           controller.enqueue(encoder.encode(chunk));
@@ -149,9 +147,17 @@ export async function POST(request) {
         finalText = '';
       }
 
-      if (!finalText.trim() && process.env.GROQ_API_KEY) {
+      if (!finalText.trim() && process.env.GEMINI_API_KEY) {
         try {
-          const fallback = streamText({ model: groqModel, system: systemPrompt, messages });
+          // thinkingBudget: 0 desliga o "raciocínio" interno do Gemini 2.5 -- pra um
+          // chat de atendimento isso só soma segundos de espera escondidos, sem
+          // melhorar a resposta visível.
+          const fallback = streamText({
+            model: geminiModel,
+            system: systemPrompt,
+            messages,
+            providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } },
+          });
           for await (const chunk of fallback.textStream) {
             finalText += chunk;
             controller.enqueue(encoder.encode(chunk));

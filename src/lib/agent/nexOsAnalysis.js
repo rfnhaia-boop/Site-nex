@@ -28,6 +28,7 @@ export async function extractAnalysisFields(messages) {
       model: geminiModel,
       system: EXTRACTION_PROMPT,
       prompt: conversationText,
+      providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } },
     });
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
