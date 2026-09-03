@@ -130,41 +130,52 @@ export async function POST(request) {
 
   const encoder = new TextEncoder();
 
-  // Groq é a resposta principal (bem mais rápido) -- Gemini fica de reserva pra
-  // quando o Groq falhar ou voltar vazio, sem o visitante perceber a troca
-  // (nada foi enviado ainda nesse caso).
+  const ATTEMPT_TIMEOUT_MS = 5000;
+
+  // Tenta um modelo e transmite os pedaços direto pro cliente conforme chegam.
+  // Só é seguro tentar de novo depois se voltar vazio (nada foi enviado ainda).
+  // Tem timeout porque, quando o modelo trava (stream nunca fecha, sem erro nem
+  // chunk nenhum), esperar o SDK resolver sozinho pode nunca acontecer -- sem
+  // isso uma falha "muda" prendia a resposta por 20s+ antes de desistir.
+  async function attempt(model, controller, providerOptions) {
+    let text = '';
+    try {
+      const result = streamText({ model, system: systemPrompt, messages, providerOptions });
+      const streamDone = (async () => {
+        for await (const chunk of result.textStream) {
+          text += chunk;
+          controller.enqueue(encoder.encode(chunk));
+        }
+      })();
+      await Promise.race([
+        streamDone,
+        new Promise((resolve) => setTimeout(resolve, ATTEMPT_TIMEOUT_MS)),
+      ]);
+    } catch (err) {
+      console.error('[chat] falha ao chamar modelo:', err?.message || err);
+    }
+    return text;
+  }
+
+  // Groq é a resposta principal (bem mais rápido). Às vezes volta vazio do nada
+  // (falha passageira do modelo, não da nossa infra) -- tenta até 3 vezes antes
+  // de cair pro Gemini, que hoje é reserva menos confiável (cota diária curta).
+  const GROQ_ATTEMPTS = 3;
+
   const stream = new ReadableStream({
     async start(controller) {
       let finalText = '';
-
-      try {
-        const primary = streamText({ model: groqModel, system: systemPrompt, messages });
-        for await (const chunk of primary.textStream) {
-          finalText += chunk;
-          controller.enqueue(encoder.encode(chunk));
-        }
-      } catch {
-        finalText = '';
+      for (let i = 0; i < GROQ_ATTEMPTS && !finalText.trim(); i++) {
+        finalText = await attempt(groqModel, controller);
       }
 
       if (!finalText.trim() && process.env.GEMINI_API_KEY) {
-        try {
-          // thinkingBudget: 0 desliga o "raciocínio" interno do Gemini 2.5 -- pra um
-          // chat de atendimento isso só soma segundos de espera escondidos, sem
-          // melhorar a resposta visível.
-          const fallback = streamText({
-            model: geminiModel,
-            system: systemPrompt,
-            messages,
-            providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } },
-          });
-          for await (const chunk of fallback.textStream) {
-            finalText += chunk;
-            controller.enqueue(encoder.encode(chunk));
-          }
-        } catch {
-          // Nenhum dos dois respondeu -- fecha vazio, o cliente mostra o erro amigável.
-        }
+        // thinkingBudget: 0 desliga o "raciocínio" interno do Gemini 2.5 -- pra um
+        // chat de atendimento isso só soma segundos de espera escondidos, sem
+        // melhorar a resposta visível.
+        finalText = await attempt(geminiModel, controller, {
+          google: { thinkingConfig: { thinkingBudget: 0 } },
+        });
       }
 
       controller.close();
