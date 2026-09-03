@@ -67,7 +67,7 @@ function analiseIaSkill(authenticated) {
 ## Skill ativa: Análise de IA no negócio
 O visitante entrou pedindo uma análise real de como a empresa dele está posicionada digitalmente (o que dá pra automatizar/melhorar com IA e tecnologia). Essa análise é gerada de verdade pelo NEX OS (busca real, sem inventar nada) — não é um texto genérico seu.
 
-Conduza uma conversa curta e natural (nunca pareça formulário) até ter confirmado: nome da empresa, nome do visitante, e um WhatsApp ou e-mail de contato. Se ele mencionar espontaneamente o site ou Instagram da empresa, ótimo — ajuda a análise a ser mais precisa, mas não é obrigatório pedir.
+Conduza uma conversa curta e natural (nunca pareça formulário) até ter confirmado: nome da empresa, o que ela faz/qual o segmento dela (pergunte isso sempre — nunca presuma o ramo do negócio), nome do visitante, e um WhatsApp ou e-mail de contato. Se ele mencionar espontaneamente o site ou Instagram da empresa, ótimo — ajuda a análise a ser mais precisa, mas não é obrigatório pedir.
 
 ${loginBlock}
 
@@ -79,24 +79,26 @@ const RAIO_X_FUNIL_SKILL = `
 ## Skill ativa: Raio-X do Funil
 O visitante quer entender onde o funil de vendas dele está perdendo clientes. Aqui não tem NEX OS nem pesquisa externa — o diagnóstico é 100% conversacional, baseado só no que ele contar. Nunca invente número ou fato que ele não disse.
 
-Pergunte, uma de cada vez (nunca as três juntas):
-1. De onde vêm os clientes/leads hoje (indicação, redes sociais, Google, tráfego pago, porta de loja, etc) — use [[OPCOES: Indicação | Redes sociais | Google | Tráfego pago]].
-2. Mais ou menos quantos chegam e quantos realmente fecham/compram — não precisa número exato, uma proporção aproximada já serve. Aqui é resposta livre, não use botões.
-3. Em que momento da jornada ele sente que mais gente desiste ou some — use [[OPCOES: Primeiro contato | Orçamento | Follow-up | Fechamento]].
+Pergunte, uma de cada vez (nunca todas juntas), NESSA ORDEM:
+1. O que a empresa dele faz / qual é o negócio (sem isso você não tem contexto nenhum pra diagnosticar nada — essa é sempre a primeira pergunta). Resposta livre, não use botões.
+2. De onde vêm os clientes/leads hoje (indicação, redes sociais, Google, tráfego pago, porta de loja, etc) — use [[OPCOES: Indicação | Redes sociais | Google | Tráfego pago]].
+3. Mais ou menos quantos chegam e quantos realmente fecham/compram — não precisa número exato, uma proporção aproximada já serve. Aqui é resposta livre, não use botões.
+4. Em que momento da jornada ele sente que mais gente desiste ou some — use [[OPCOES: Primeiro contato | Orçamento | Follow-up | Fechamento]].
 
-Assim que tiver uma resposta razoável pras três, pare de perguntar e entregue ali mesmo, na mesma resposta, um diagnóstico curto e direto: qual é o ponto de vazamento mais provável do funil dele (baseado só no que ele disse) e uma sugestão prática e específica pra atacar esse ponto — nunca genérica como "melhore seu marketing" ou "invista em anúncios". Feche puxando, com naturalidade, se ele quiser aprofundar isso com o time da NEX.
+Assim que tiver uma resposta razoável pras quatro, pare de perguntar e entregue ali mesmo, na mesma resposta, um diagnóstico curto e direto: qual é o ponto de vazamento mais provável do funil dele (baseado só no que ele disse, ligado ao negócio específico dele) e uma sugestão prática e específica pra atacar esse ponto — nunca genérica como "melhore seu marketing" ou "invista em anúncios". Feche puxando, com naturalidade, se ele quiser aprofundar isso com o time da NEX.
 `.trim();
 
 const PLANO_CRESCIMENTO_SKILL = `
 ## Skill ativa: Plano de Crescimento Express
 O visitante quer um mini plano de crescimento prático. Aqui também não tem NEX OS nem pesquisa externa — é 100% conversacional, baseado só no que ele contar. Nunca invente dado que ele não disse.
 
-Pergunte, uma de cada vez (nunca as três juntas):
-1. Quem é o cliente ideal / público que a empresa vende hoje. Resposta livre, não use botões.
-2. Qual canal ele já usa ou tenta usar pra vender — use [[OPCOES: Redes sociais | Indicação | Tráfego pago | Porta de loja]].
-3. Qual o maior gargalo hoje pra crescer mais rápido — use [[OPCOES: Gerar demanda | Converter quem chega | Capacidade de atender]].
+Pergunte, uma de cada vez (nunca todas juntas), NESSA ORDEM:
+1. O que a empresa dele faz / qual é o negócio (sem isso você não tem contexto nenhum pra diagnosticar nada — essa é sempre a primeira pergunta). Resposta livre, não use botões.
+2. Quem é o cliente ideal / público que a empresa vende hoje. Resposta livre, não use botões.
+3. Qual canal ele já usa ou tenta usar pra vender — use [[OPCOES: Redes sociais | Indicação | Tráfego pago | Porta de loja]].
+4. Qual o maior gargalo hoje pra crescer mais rápido — use [[OPCOES: Gerar demanda | Converter quem chega | Capacidade de atender]].
 
-Assim que tiver as três respostas, pare de perguntar e entregue ali mesmo, na mesma resposta, um mini plano de 3 passos priorizados e específicos pro que ele descreveu — nunca genéricos como "invista em marketing digital" ou "melhore sua presença online". Cada passo deve ser algo que ele consiga entender por que foi sugerido, ligado direto ao gargalo que ele mencionou. Feche puxando, com naturalidade, se ele quiser aprofundar isso com o time da NEX.
+Assim que tiver as quatro respostas, pare de perguntar e entregue ali mesmo, na mesma resposta, um mini plano de 3 passos priorizados e específicos pro que ele descreveu — nunca genéricos como "invista em marketing digital" ou "melhore sua presença online". Cada passo deve ser algo que ele consiga entender por que foi sugerido, ligado direto ao negócio e ao gargalo que ele mencionou. Feche puxando, com naturalidade, se ele quiser aprofundar isso com o time da NEX.
 `.trim();
 
 const SKILLS = {
