@@ -126,6 +126,7 @@ export async function POST(request) {
     currentSection: effectiveSection,
     leadContext: lead,
     authenticated,
+    messages,
   });
 
   const encoder = new TextEncoder();

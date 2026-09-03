@@ -105,8 +105,11 @@ const SKILLS = {
   'plano-crescimento': () => PLANO_CRESCIMENTO_SKILL,
 };
 
-export function buildSystemPrompt({ currentPage, currentSection, leadContext, authenticated = false } = {}) {
-  const knowledge = loadCoreKnowledge();
+export function buildSystemPrompt({ currentPage, currentSection, leadContext, authenticated = false, messages = [] } = {}) {
+  // Só os docs relevantes ao assunto entram no prompt (ver knowledge.js) --
+  // por isso olha a conversa inteira, não só a última mensagem.
+  const conversationText = messages.map((m) => m.content).join('\n');
+  const knowledge = loadCoreKnowledge(conversationText);
 
   const knowledgeBlock = knowledge
     .map((doc) => `### ${doc.id}\n${doc.content}`)
