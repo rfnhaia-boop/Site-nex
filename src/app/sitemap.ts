@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SEO_PAGES } from "@/lib/seoPages";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nex.newflowsys.cloud";
 
@@ -11,12 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    {
-      url: `${SITE_URL}/automacao-ia-para-empresas-jundiai`,
+    ...SEO_PAGES.map((page) => ({
+      url: `${SITE_URL}${page.path}`,
       lastModified: now,
-      changeFrequency: "monthly",
+      changeFrequency: "monthly" as const,
       priority: 0.9,
-    },
+    })),
     {
       url: `${SITE_URL}/havi`,
       lastModified: now,

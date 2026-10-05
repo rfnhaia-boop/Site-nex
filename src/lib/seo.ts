@@ -69,3 +69,13 @@ export const siteJsonLd = {
     },
   ],
 };
+
+// Metadata padrão das páginas de conteúdo (título absoluto, canonical, OG com imagem).
+export function pageMetadata({ title, description, path }: { title: string; description: string; path: string }) {
+  return {
+    title: { absolute: title },
+    description,
+    alternates: { canonical: path },
+    openGraph: { title, description, url: path, images: [OG_IMAGE] },
+  };
+}
