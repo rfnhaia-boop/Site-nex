@@ -104,6 +104,7 @@ export function Navbar() {
               RA
             </button>
             <button 
+              aria-label="Abrir menu"
               className="w-10 h-10 rounded-full border border-white/10 bg-white/[0.03] flex items-center justify-center text-zinc-300 backdrop-blur-md"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >

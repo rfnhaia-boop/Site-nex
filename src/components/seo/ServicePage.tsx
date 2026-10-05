@@ -146,7 +146,7 @@ export function ServicePage({ data }: { data: ServicePageData }) {
                 <li key={title} className="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
                   <div className="flex items-center justify-between mb-4">
                     <Icon className="w-5 h-5 text-nex-orange" />
-                    <span className="text-[10px] font-mono text-zinc-500">0{i + 1}</span>
+                    <span className="text-[10px] font-mono text-zinc-400">0{i + 1}</span>
                   </div>
                   <h3 className="font-bold mb-1">{title}</h3>
                   <p className="text-xs text-zinc-400 leading-relaxed">{text}</p>
@@ -203,7 +203,7 @@ export function ServicePage({ data }: { data: ServicePageData }) {
         </section>
 
         <nav aria-label="Outros serviços da NEX" className="mb-8">
-          <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-zinc-500 mb-4">Outros serviços da NEX</h2>
+          <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 mb-4">Outros serviços da NEX</h2>
           <ul className="flex flex-wrap gap-3">
             {related.map((p) => (
               <li key={p.path}>

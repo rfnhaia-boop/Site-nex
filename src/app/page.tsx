@@ -46,6 +46,7 @@ function MobileAnimatedCards({ cards }: { cards: any[] }) {
             <button
               key={i}
               onClick={() => scrollToIndex(i)}
+              aria-label={`Ver card ${i + 1}`}
               className={`h-1 rounded-full transition-all duration-300 ${
                 i === activeIndex 
                   ? "w-6 bg-nex-orange shadow-[0_0_8px_rgba(255,106,0,0.6)]" 
