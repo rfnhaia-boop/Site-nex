@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { trackEvent } from "@/lib/nexTracking";
 
 const MOMENTO_OPTIONS = [
   "Ainda validando a ideia",
@@ -49,6 +50,10 @@ export default function DiagnosticFlow({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    trackEvent("form_start", { metadata: { form: "diagnostico" } });
+  }, []);
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -64,6 +69,7 @@ export default function DiagnosticFlow({ onClose }: { onClose: () => void }) {
   const canAdvanceStep2 = form.momento && form.gargalo.trim();
 
   async function handleSubmit() {
+    trackEvent("form_submit", { metadata: { form: "diagnostico" } });
     setSubmitting(true);
     setError("");
     try {

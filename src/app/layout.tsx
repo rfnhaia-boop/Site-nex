@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { FloatingBot } from "@/components/FloatingBot";
 import { AuthSessionProvider } from "@/components/AuthSessionProvider";
+import { NexPageTracker } from "@/components/NexPageTracker";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,10 +11,10 @@ const inter = Inter({
   weight: ["400", "600", "700", "900"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nex.com.br";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nex.newflowsys.cloud";
 const SITE_NAME = "NEX — Estratégia. Tecnologia. Crescimento.";
 const SITE_DESCRIPTION =
-  "A NEX é a empresa de crescimento da NEW. Pesquisamos, projetamos e construímos sistemas digitais que conectam estratégia, design, tecnologia e IA — não vendemos site, post ou IA isolados.";
+  "Empresa de crescimento da NEW: pesquisamos, projetamos e construímos sistemas digitais que unem estratégia, design, tecnologia e IA.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -108,6 +109,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-nex-black text-nex-white selection:bg-nex-orange/30">
         <AuthSessionProvider>
+          <NexPageTracker />
           {children}
           <FloatingBot />
         </AuthSessionProvider>

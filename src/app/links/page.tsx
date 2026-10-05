@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRaviChat } from "@/lib/useRaviChat";
+import { trackEvent } from "@/lib/nexTracking";
 import DiagnosticFlow from "@/components/DiagnosticFlow";
 import ChatComposer from "@/components/ChatComposer";
 
@@ -59,6 +60,11 @@ function SocialButton({ href, label, children }: { href: string; label: string; 
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
+      onClick={() =>
+        trackEvent(label === "WhatsApp" ? "whatsapp_click" : "external_link_click", {
+          metadata: { link: label.toLowerCase(), cta: `links_${label.toLowerCase()}` },
+        })
+      }
       className="w-14 h-14 rounded-[1.25rem] bg-white/[0.03] backdrop-blur-[40px] border border-white/10 flex items-center justify-center text-zinc-300 hover:text-white hover:border-white/30 hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(255,106,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] transition-all duration-300"
     >
       {children}
@@ -75,6 +81,7 @@ function LinkCard({
   featured = false,
   isLast = false,
   onClick,
+  trackAs,
 }: {
   href?: string;
   icon?: React.ElementType;
@@ -84,7 +91,12 @@ function LinkCard({
   featured?: boolean;
   isLast?: boolean;
   onClick?: () => void;
+  // Nome do clique no NEX OS (aba Comportamento → botões mais clicados).
+  trackAs?: string;
 }) {
+  const track = () => {
+    if (trackAs) trackEvent("cta_click", { metadata: { cta: trackAs } });
+  };
   const content = (
     <div className={`group relative w-full flex items-center gap-4 px-5 py-4 rounded-[1.5rem] backdrop-blur-[40px] border transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 ${
       featured 
@@ -112,14 +124,14 @@ function LinkCard({
 
   if (onClick) {
     return (
-      <button onClick={onClick} className="w-full text-left">
+      <button onClick={() => { track(); onClick(); }} className="w-full text-left">
         {content}
       </button>
     );
   }
 
   return (
-    <a href={href} className="w-full block">
+    <a href={href} onClick={track} className="w-full block">
       {content}
     </a>
   );
@@ -234,6 +246,7 @@ export default function LinksPage() {
   // Usada pelo menu "+" do composer — garante que os atalhos ativem a skill de
   // verdade (currentSection certo), igual já acontece no /ia.
   function startSkill(text: string, section: string) {
+    trackEvent("cta_click", { metadata: { cta: `links_skill_${section || "geral"}` } });
     if (section) setCurrentSection(section);
     sendMessage(text, section || undefined);
   }
@@ -294,6 +307,8 @@ export default function LinksPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col items-center text-center mb-6 mt-0"
             >
+              {/* O título visual é o logo (imagem) — o H1 fica pra Google e leitor de tela. */}
+              <h1 className="sr-only">NEX — fale com o Havi, peça um diagnóstico gratuito ou acesse nossas redes</h1>
               <div className="relative w-[360px] h-32 mb-2">
                 <Image
                   src="/logo-nex-neon.png"
@@ -397,15 +412,17 @@ export default function LinksPage() {
                 }
                 title="Conheça o Havi"
                 subtitle="Converse com a Inteligência da NEX"
+                trackAs="links_conhecer_havi"
               />
               <LinkCard
                 icon={Sparkles}
                 title="Diagnóstico IA"
                 subtitle="Análise gratuita e mapeamento do seu potencial."
                 featured
+                trackAs="links_diagnostico_ia"
                 onClick={() => setDiagnosticOpen(true)}
               />
-              <LinkCard isLast href="/" icon={Rocket} title="Explore o Futuro" subtitle="Veja nossos projetos em ação." />
+              <LinkCard isLast href="/" icon={Rocket} title="Explore o Futuro" subtitle="Veja nossos projetos em ação." trackAs="links_explore_site" />
             </motion.div>
           </>
         ) : (

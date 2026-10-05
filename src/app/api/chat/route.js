@@ -5,6 +5,7 @@ import { groqModel } from '@/lib/agent/groq';
 import { buildSystemPrompt } from '@/lib/agent/systemPrompt';
 import { extractAndSaveLead } from '@/lib/agent/leadIntelligence';
 import { extractAnalysisFields, triggerNexOsAnalysis } from '@/lib/agent/nexOsAnalysis';
+import { trackConversationToNexCore } from '@/lib/agent/nexSiteTracking';
 import { prisma } from '@/lib/prisma';
 import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 import { auth } from '@/lib/auth';
@@ -198,6 +199,8 @@ export async function POST(request) {
             triggerNexOsAnalysis(sessionId, fields);
           }
         }
+
+        trackConversationToNexCore(sessionId, fullConversation);
       }
     },
   });

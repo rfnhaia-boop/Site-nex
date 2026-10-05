@@ -10,6 +10,13 @@ export const metadata: Metadata = {
     description:
       "Fale com o Havi, peça um diagnóstico gratuito ou acesse as redes da NEX — tudo em um só lugar.",
     url: "/links",
+    images: [{ url: "/hero-bg.png", width: 1536, height: 1024, alt: "NEX — Links" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NEX — Links",
+    description: "Fale com o Havi, peça um diagnóstico gratuito ou acesse as redes da NEX — tudo em um só lugar.",
+    images: ["/hero-bg.png"],
   },
 };
 

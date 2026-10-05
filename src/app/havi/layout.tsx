@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Havi — A Inteligência da NEX",
   description:
-    "Conheça o Havi: a inteligência artificial da NEX que entende seu negócio, identifica gargalos e entrega o próximo passo executável. Análise, execução e segurança em um só lugar.",
+    "Conheça o Havi, a IA da NEX que entende seu negócio, encontra os gargalos e entrega o próximo passo executável.",
   alternates: { canonical: "/havi" },
   openGraph: {
     title: "Havi — A Inteligência da NEX",

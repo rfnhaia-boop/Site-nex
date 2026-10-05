@@ -7,6 +7,7 @@ import { Zap, Target, Brain, ArrowRight, MessageSquare, Search, Shield, Rocket, 
 import React, { MouseEvent, useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { IAChatInterface } from "@/components/IAChatInterface";
+import { trackEvent } from "@/lib/nexTracking";
 
 export default function HaviPage() {
   const mouseX = useMotionValue(0);
@@ -212,8 +213,9 @@ export default function HaviPage() {
                   <FeatureItem icon={Zap} text="Automação e Execução" />
                 </ul>
                 
-                <Link 
-                  href="/ia" 
+                <Link
+                  href="/ia"
+                  onClick={() => trackEvent("cta_click", { metadata: { cta: "havi_fazer_analise" } })}
                   className="w-full flex items-center justify-center gap-3 py-3 lg:py-3.5 rounded-xl bg-gradient-to-r from-[#FF6A00] to-[#FF4000] text-black font-black uppercase tracking-widest text-[10px] lg:text-xs hover:scale-[1.03] active:scale-95 transition-all shadow-[0_0_25px_rgba(255,106,0,0.3)] group relative overflow-hidden"
                 >
                   <span className="relative z-10">Fazer Análise</span>
@@ -266,9 +268,9 @@ export default function HaviPage() {
           >
             <div className="w-full flex">
               <div className="w-[90%] sm:w-[85%] lg:w-auto max-w-sm pointer-events-auto mx-auto lg:mx-0 lg:ml-[15%] bg-black/80 lg:bg-transparent backdrop-blur-2xl lg:backdrop-blur-none p-6 lg:p-0 rounded-[2rem] lg:rounded-none border border-white/10 lg:border-none shadow-[0_20px_50px_rgba(0,0,0,0.8)] lg:shadow-none relative z-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-3 lg:mb-6">
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-3 lg:mb-6">
                   Foco no <span className="text-[#FF6A00]">Seu Negócio.</span>
-                </h1>
+                </h2>
                 <p className="text-white/70 lg:text-white/60 text-xs sm:text-sm lg:text-lg font-light leading-relaxed mb-5 lg:mb-8">
                   Esqueça configurações chatas. Eu assumo as operações pesadas para que você foque apenas em liderar.
                 </p>
@@ -281,8 +283,9 @@ export default function HaviPage() {
                   </p>
                 </GlassPanel>
 
-                <Link 
-                  href="/ia" 
+                <Link
+                  href="/ia"
+                  onClick={() => trackEvent("cta_click", { metadata: { cta: "havi_raio_x_funil" } })}
                   className="w-full flex items-center justify-center gap-3 py-3.5 lg:py-4 rounded-xl border border-[#FF6A00]/40 bg-[#FF6A00]/10 text-[#FF6A00] font-black uppercase tracking-widest text-[10px] lg:text-xs hover:bg-[#FF6A00]/20 hover:border-[#FF6A00]/80 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_20px_rgba(255,106,0,0.15)] group"
                 >
                   <Activity className="w-4 h-4 group-hover:animate-ping" />
@@ -351,9 +354,9 @@ export default function HaviPage() {
                 <h2 className="text-[#FF6A00] uppercase tracking-[0.2em] lg:tracking-[0.3em] text-[9px] sm:text-[10px] lg:text-xs font-bold mb-3 lg:mb-4 drop-shadow-[0_0_10px_rgba(255,106,0,0.3)]">
                   Privacidade de Ponta a Ponta
                 </h2>
-                <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-3 lg:mb-6">
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-3 lg:mb-6">
                   Inteligência <span className="text-[#FF6A00]">Blindada.</span>
-                </h1>
+                </h2>
                 <p className="text-white/70 lg:text-white/60 text-xs sm:text-sm lg:text-lg font-light leading-relaxed mb-5 lg:mb-8 text-left lg:text-right">
                   A magia acontece com responsabilidade. Todos os dados que eu processo são encriptados e protegidos por uma muralha digital intransponível.
                 </p>

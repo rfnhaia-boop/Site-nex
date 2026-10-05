@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate, useScroll, useTransform } from "framer-motion";
 import { Target, Zap, TrendingUp, Layers, ChevronDown, ArrowRight, Unlock, Check, MessageSquare } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { trackEvent } from "@/lib/nexTracking";
 
 function MobileAnimatedCards({ cards }: { cards: any[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -169,6 +170,15 @@ function SpotlightCard({ card, index, isActive }: { card: any, index: number, is
   );
 }
 
+// Produtos NEX — mesma lista da faixa unificada (blueprint-nex-page,
+// scan-nex, nex-context-agent). Uma empresa, produtos diferentes. URLs em
+// NEXT_PUBLIC_NEX_URL_*; produto sem URL não aparece.
+const NEX_PRODUCTS = [
+  { key: "blueprint", name: "Blueprint NEX", desc: "O plano estratégico da sua empresa", url: process.env.NEXT_PUBLIC_NEX_URL_BLUEPRINT },
+  { key: "scan", name: "Scan NEX", desc: "Diagnóstico rápido em 7 pilares", url: process.env.NEXT_PUBLIC_NEX_URL_SCAN },
+  { key: "context", name: "Context Agent", desc: "Seu plano de crescimento com a NEX", url: process.env.NEXT_PUBLIC_NEX_URL_CONTEXT },
+].filter((p): p is typeof p & { url: string } => !!p.url);
+
 export default function Home() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -318,7 +328,7 @@ export default function Home() {
             
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto">
               {/* Botão Primário: Diagnóstico */}
-              <button onClick={() => router.push("/ia")} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-[40px] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white font-bold tracking-widest uppercase text-xs flex justify-center items-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
+              <button onClick={() => { trackEvent("cta_click", { metadata: { cta: "hero_diagnostico" } }); router.push("/ia"); }} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-[40px] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 text-white font-bold tracking-widest uppercase text-xs flex justify-center items-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.2)]">
                 <span className="relative z-10 flex items-center gap-2">
                   <Target className="w-4 h-4 text-nex-orange group-hover:scale-110 transition-transform" />
                   Fazer Diagnóstico
@@ -327,7 +337,7 @@ export default function Home() {
               </button>
 
               {/* Botão Secundário: Agendar */}
-              <button onClick={() => router.push("/ia")} className="w-full sm:w-auto px-8 py-4 rounded-2xl border border-white/10 bg-transparent hover:bg-white/[0.04] text-zinc-300 font-bold tracking-widest uppercase text-xs flex justify-center items-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+              <button onClick={() => { trackEvent("cta_click", { metadata: { cta: "hero_agendar" } }); router.push("/ia"); }} className="w-full sm:w-auto px-8 py-4 rounded-2xl border border-white/10 bg-transparent hover:bg-white/[0.04] text-zinc-300 font-bold tracking-widest uppercase text-xs flex justify-center items-center transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
                 Agendar Reunião
               </button>
             </div>
@@ -809,8 +819,8 @@ export default function Home() {
 
             {/* CALL TO ACTION (CTA - Monocromático Liquid Titanium) */}
             <motion.div className="mt-12">
-              <motion.button 
-                onClick={() => router.push("/ia")}
+              <motion.button
+                onClick={() => { trackEvent("cta_click", { metadata: { cta: "mudar_padrao" } }); router.push("/ia"); }}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 className="group relative inline-flex items-center justify-center px-8 md:px-12 py-4 md:py-5 rounded-full overflow-hidden shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 active:scale-95 cursor-pointer bg-white"
@@ -882,7 +892,7 @@ export default function Home() {
             </ul>
 
             <div className="pt-6 lg:pt-10 flex w-full">
-              <button onClick={() => router.push("/havi")} className="w-full sm:w-auto group relative px-8 lg:px-10 py-4 lg:py-5 rounded-full bg-white/[0.02] backdrop-blur-3xl border border-white/10 text-white hover:bg-white/[0.06] hover:border-nex-orange/40 transition-all duration-500 flex items-center justify-between sm:justify-start space-x-6 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_40px_rgba(255,106,0,0.2)]">
+              <button onClick={() => { trackEvent("cta_click", { metadata: { cta: "conhecer_havi" } }); router.push("/havi"); }} className="w-full sm:w-auto group relative px-8 lg:px-10 py-4 lg:py-5 rounded-full bg-white/[0.02] backdrop-blur-3xl border border-white/10 text-white hover:bg-white/[0.06] hover:border-nex-orange/40 transition-all duration-500 flex items-center justify-between sm:justify-start space-x-6 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_40px_rgba(255,106,0,0.2)]">
                 <span className="relative z-10 font-bold tracking-[0.1em] lg:tracking-[0.15em] uppercase text-xs lg:text-sm">Conhecer o Havi</span>
                 <div className="relative z-10 w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-nex-orange/20 flex items-center justify-center group-hover:bg-nex-orange transition-colors duration-500 border border-nex-orange/30 group-hover:border-nex-orange overflow-hidden shrink-0">
                   <Image src="/ravi-avatar.png" alt="Havi" width={24} height={24} className="object-cover rounded-full group-hover:scale-110 transition-transform duration-500 w-full h-full p-1" />
@@ -1015,7 +1025,7 @@ export default function Home() {
                   <h3 className="text-2xl font-bold text-white mb-2">Solicitar Diagnóstico</h3>
                   <p className="text-xs text-zinc-500 font-mono mb-8">Limitado à capacidade da equipe técnica.</p>
 
-                  <button onClick={() => router.push("/ia")} className="w-full relative py-4 rounded-xl bg-gradient-to-r from-nex-orange to-[#FF9040] text-black font-bold tracking-widest uppercase text-sm flex justify-center items-center overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]">
+                  <button onClick={() => { trackEvent("cta_click", { metadata: { cta: "garantir_vaga" } }); router.push("/ia"); }} className="w-full relative py-4 rounded-xl bg-gradient-to-r from-nex-orange to-[#FF9040] text-black font-bold tracking-widest uppercase text-sm flex justify-center items-center overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]">
                     <span className="relative z-10">Garantir Minha Vaga</span>
                     {/* Brilho hover */}
                     <div className="absolute inset-0 bg-white/20 -translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500 ease-in-out" />
@@ -1068,7 +1078,30 @@ export default function Home() {
             {/* Linha de reflexo sutil no topo do card */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 text-left">
+            <div className={`w-full grid grid-cols-1 sm:grid-cols-2 ${NEX_PRODUCTS.length ? "lg:grid-cols-5" : "lg:grid-cols-4"} gap-10 md:gap-12 text-left`}>
+              {/* Coluna 0: Produtos NEX (faixa unificada com Blueprint, Scan e Context Agent) */}
+              {NEX_PRODUCTS.length > 0 && (
+                <div className="flex flex-col space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-nex-orange/70" />
+                    <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Produtos NEX</span>
+                  </div>
+                  <div className="flex flex-col space-y-3">
+                    {NEX_PRODUCTS.map((p) => (
+                      <a
+                        key={p.key}
+                        href={p.url}
+                        onClick={() => trackEvent("cta_click", { metadata: { cta: `produto_${p.key}` } })}
+                        className="group text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300"
+                      >
+                        {p.name}
+                        <span className="block text-[11px] text-zinc-500 group-hover:text-zinc-400">{p.desc}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Coluna 1: Navegação */}
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center space-x-2">
@@ -1090,8 +1123,8 @@ export default function Home() {
                   <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Contato</span>
                 </div>
                 <div className="flex flex-col space-y-3">
-                  <a href="mailto:new.flow.sys@gmail.com" className="text-sm text-zinc-300 hover:text-white transition-colors">new.flow.sys@gmail.com</a>
-                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-300 hover:text-white transition-colors">(11) 93620-2934</a>
+                  <a href="mailto:new.flow.sys@gmail.com" onClick={() => trackEvent("email_click")} className="text-sm text-zinc-300 hover:text-white transition-colors">new.flow.sys@gmail.com</a>
+                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-300 hover:text-white transition-colors">(11) 93620-2934</a>
                   <span className="text-sm text-zinc-400">Jundiaí, SP — Brasil</span>
                   <span className="text-xs font-mono text-zinc-500">Atendimento 24/7 via IA</span>
                 </div>
@@ -1104,9 +1137,9 @@ export default function Home() {
                   <span className="text-zinc-400 font-mono text-[11px] tracking-[0.2em] uppercase font-bold">Social</span>
                 </div>
                 <div className="flex flex-col space-y-3">
-                  <a href="https://www.instagram.com/nex_flow_oficial?igsh=enF3cTEzazF1cTBx&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">Instagram</a>
-                  <a href="https://linkedin.com/company/nex" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">LinkedIn</a>
-                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">WhatsApp Direto</a>
+                  <a href="https://www.instagram.com/nex_flow_oficial?igsh=enF3cTEzazF1cTBx&utm_source=qr" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("external_link_click", { metadata: { link: "instagram" } })} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">Instagram</a>
+                  <a href="https://linkedin.com/company/nex" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("external_link_click", { metadata: { link: "linkedin" } })} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">LinkedIn</a>
+                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">WhatsApp Direto</a>
                 </div>
               </div>
 

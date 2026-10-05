@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
+import { trackEvent } from "@/lib/nexTracking";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -75,8 +76,8 @@ export function Navbar() {
             {/* USER AVATAR */}
             <div className="flex items-center space-x-4 pl-4 border-l border-white/10">
               {/* CTA DESKTOP */}
-              <button 
-                onClick={() => router.push("/ia")}
+              <button
+                onClick={() => { trackEvent("cta_click", { metadata: { cta: "navbar_acessar_ia" } }); router.push("/ia"); }}
                 className="px-6 py-2.5 rounded-full border border-nex-orange/30 bg-nex-orange/10 text-nex-orange font-bold text-xs tracking-widest uppercase hover:bg-nex-orange hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(255,106,0,0.2)] hover:shadow-[0_0_30px_rgba(255,106,0,0.5)] flex items-center gap-2 group hidden lg:flex"
               >
                 Acessar IA
@@ -143,6 +144,7 @@ export function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 onClick={() => {
+                  trackEvent("cta_click", { metadata: { cta: "navbar_acessar_ia_mobile" } });
                   setMobileMenuOpen(false);
                   router.push("/ia");
                 }}

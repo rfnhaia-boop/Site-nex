@@ -18,6 +18,7 @@ import {
   ArrowUp
 } from "lucide-react";
 import DiagnosticFlow from "@/components/DiagnosticFlow";
+import { trackEvent } from "@/lib/nexTracking";
 import ChatComposer from "@/components/ChatComposer";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -118,6 +119,7 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
   }, [isRecordingAudio]);
 
   function startSkill(text: string, section: string) {
+    trackEvent("cta_click", { metadata: { cta: `skill_${section || "geral"}` } });
     if (section) setCurrentSection(section);
     sendMessage(text, section || undefined);
   }
@@ -298,7 +300,7 @@ export function IAChatInterface({ embedded = false, onBackToTop }: IAChatInterfa
                 icon={HelpCircle}
                 title="Dúvida Específica"
                 desc="Pergunte sobre qualquer coisa"
-                onClick={() => sendMessage("Tenho uma dúvida específica sobre a NEX.")}
+                onClick={() => { trackEvent("cta_click", { metadata: { cta: "skill_duvida" } }); sendMessage("Tenho uma dúvida específica sobre a NEX."); }}
               />
             </div>
           </div>
