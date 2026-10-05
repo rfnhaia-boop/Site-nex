@@ -1112,6 +1112,7 @@ export default function Home() {
                   <a href="/" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Início</a>
                   <a href="/ia" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Fale com o Havi</a>
                   <a href="/ia" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Solicitar Diagnóstico</a>
+                  <a href="/automacao-ia-para-empresas-jundiai" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Automação com IA</a>
                   <a href="/links" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Todos os Links</a>
                 </div>
               </div>
