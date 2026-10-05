@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_IMAGE } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Fale com o Havi",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     title: "Havi — a IA da NEX",
     description: "Converse com o Havi, a inteligência artificial especialista da NEX.",
     url: "/ia",
+    images: [OG_IMAGE],
   },
 };
 

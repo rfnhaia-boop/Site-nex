@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Havi — A Inteligência da NEX",
+  title: { absolute: "Havi — A Inteligência Artificial da NEX" },
   description:
     "Conheça o Havi, a IA da NEX que entende seu negócio, encontra os gargalos e entrega o próximo passo executável.",
   alternates: { canonical: "/havi" },

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_IMAGE } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Termos de Uso",
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
     title: "Termos de Uso | NEX",
     description: "Termos e condições de uso do site e dos produtos da NEX.",
     url: "/termos",
+    images: [OG_IMAGE],
   },
 };
 

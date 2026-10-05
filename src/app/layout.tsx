@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { FloatingBot } from "@/components/FloatingBot";
 import { AuthSessionProvider } from "@/components/AuthSessionProvider";
 import { NexPageTracker } from "@/components/NexPageTracker";
+import { OG_IMAGE, siteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -12,9 +13,9 @@ const inter = Inter({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nex.newflowsys.cloud";
-const SITE_NAME = "NEX — Estratégia. Tecnologia. Crescimento.";
+const SITE_NAME = "NEX | Agência de Crescimento, Tecnologia e IA em Jundiaí";
 const SITE_DESCRIPTION =
-  "Empresa de crescimento da NEW: pesquisamos, projetamos e construímos sistemas digitais que unem estratégia, design, tecnologia e IA.";
+  "Empresa de crescimento da NEW em Jundiaí-SP: unimos estratégia, design, tecnologia e IA para construir sistemas digitais que posicionam e escalam empresas.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -57,36 +58,16 @@ export const metadata: Metadata = {
     siteName: "NEX",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: [
-      {
-        url: "/hero-bg.png",
-        width: 1536,
-        height: 1024,
-        alt: "NEX — Design, tecnologia e estratégia para empresas que não aceitam o ordinário.",
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/hero-bg.png"],
+    images: [OG_IMAGE.url],
   },
   icons: {
     icon: "/favicon.ico",
-  },
-};
-
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "NEX",
-  url: SITE_URL,
-  description: SITE_DESCRIPTION,
-  slogan: "Design, tecnologia e estratégia para empresas que não aceitam o ordinário.",
-  parentOrganization: {
-    "@type": "Organization",
-    name: "NEW",
   },
 };
 
@@ -104,7 +85,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
         />
       </head>
       <body className="min-h-full flex flex-col bg-nex-black text-nex-white selection:bg-nex-orange/30">

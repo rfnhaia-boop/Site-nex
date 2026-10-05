@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Entrar",
   description: "Acesse sua conta NEX.",
+  alternates: { canonical: "/login" },
   robots: { index: false, follow: false }, // página de acesso, sem valor pra busca
 };
 
