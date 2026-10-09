@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { streamText } from 'ai';
 import { geminiModel } from '@/lib/agent/gemini';
-import { groqModel } from '@/lib/agent/groq';
+import { CHAT_CHAIN } from '@/lib/agent/groq';
 import { buildSystemPrompt } from '@/lib/agent/systemPrompt';
 import { extractAndSaveLead } from '@/lib/agent/leadIntelligence';
 import { extractAnalysisFields, triggerNexOsAnalysis } from '@/lib/agent/nexOsAnalysis';
@@ -16,6 +16,13 @@ export const maxDuration = 30;
 const SESSION_COOKIE = 'nex_session';
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_MESSAGES_PER_REQUEST = 60;
+
+// Cache de respostas para a 1ª mensagem de cada conversa (os botões/atalhos mandam sempre o mesmo texto).
+// Poupa o limite por minuto do plano gratuito da Groq e responde na hora. Só para quem ainda não
+// tem contexto salvo, pois o contexto muda a resposta.
+const RESPONSE_CACHE = new Map();
+const CACHE_TTL_MS = 60 * 60 * 1000;
+const CACHE_MAX = 300;
 
 export async function POST(request) {
   if (!process.env.GROQ_API_KEY && !process.env.GEMINI_API_KEY) {
@@ -132,13 +139,20 @@ export async function POST(request) {
 
   const encoder = new TextEncoder();
 
-  const ATTEMPT_TIMEOUT_MS = 5000;
+  const ATTEMPT_TIMEOUT_MS = 6000;
 
   // Tenta um modelo e transmite os pedaços direto pro cliente conforme chegam.
   // Só é seguro tentar de novo depois se voltar vazio (nada foi enviado ainda).
   // Tem timeout porque, quando o modelo trava (stream nunca fecha, sem erro nem
   // chunk nenhum), esperar o SDK resolver sozinho pode nunca acontecer -- sem
   // isso uma falha "muda" prendia a resposta por 20s+ antes de desistir.
+  const cacheKey =
+    messages.length === 1 && !lead?.empresa
+      ? [currentPage ?? '', effectiveSection ?? '', authenticated, lastMessage.content.trim().toLowerCase()].join('|')
+      : null;
+  const cached = cacheKey ? RESPONSE_CACHE.get(cacheKey) : null;
+  const cacheHit = cached && Date.now() - cached.at < CACHE_TTL_MS ? cached.text : null;
+
   async function attempt(model, controller, providerOptions) {
     let text = '';
     try {
@@ -162,13 +176,18 @@ export async function POST(request) {
   // Groq é a resposta principal (bem mais rápido). Às vezes volta vazio do nada
   // (falha passageira do modelo, não da nossa infra) -- tenta até 3 vezes antes
   // de cair pro Gemini, que hoje é reserva menos confiável (cota diária curta).
-  const GROQ_ATTEMPTS = 3;
+  const GROQ_ATTEMPTS = 4; // fast → qwen → big → fast
 
   const stream = new ReadableStream({
     async start(controller) {
       let finalText = '';
+      if (cacheHit) {
+        finalText = cacheHit;
+        controller.enqueue(encoder.encode(cacheHit));
+      }
+      // um modelo por vez; 429 (limite por minuto do plano gratuito) volta vazio na hora e passa pro próximo
       for (let i = 0; i < GROQ_ATTEMPTS && !finalText.trim(); i++) {
-        finalText = await attempt(groqModel, controller);
+        finalText = await attempt(CHAT_CHAIN[i % CHAT_CHAIN.length], controller);
       }
 
       if (!finalText.trim() && process.env.GEMINI_API_KEY) {
@@ -181,6 +200,11 @@ export async function POST(request) {
       }
 
       controller.close();
+
+      if (finalText.trim() && cacheKey && !cacheHit) {
+        if (RESPONSE_CACHE.size >= CACHE_MAX) RESPONSE_CACHE.delete(RESPONSE_CACHE.keys().next().value);
+        RESPONSE_CACHE.set(cacheKey, { text: finalText, at: Date.now() });
+      }
 
       if (finalText.trim()) {
         await prisma.chatMessage.create({

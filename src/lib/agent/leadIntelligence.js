@@ -1,5 +1,4 @@
-import { generateText } from 'ai';
-import { geminiModel } from './gemini';
+import { generateTextResilient } from './generate';
 import { prisma } from '../prisma';
 
 const LEAD_FIELDS = [
@@ -43,12 +42,7 @@ export async function extractAndSaveLead({ sessionId, messages }) {
       .map((m) => `${m.role === 'user' ? 'Visitante' : 'Havi'}: ${m.content}`)
       .join('\n');
 
-    const { text } = await generateText({
-      model: geminiModel,
-      system: EXTRACTION_PROMPT,
-      prompt: conversationText,
-      providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } },
-    });
+    const text = await generateTextResilient({ system: EXTRACTION_PROMPT, prompt: conversationText });
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return;

@@ -40,9 +40,23 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
 ];
 
+// Produtos NEX estáticos (Blueprint, Squad): ficam em public/<produto>/ e abrem em URL limpa
+// (/blueprint, /blueprint/agendar) em vez de /blueprint/index.html.
+const staticProductRewrites = [
+  { source: "/blueprint", destination: "/blueprint/index.html" },
+  { source: "/blueprint/agendar", destination: "/blueprint/agendar.html" },
+  { source: "/blueprint/growth-scan", destination: "/blueprint/growth-scan.html" },
+  { source: "/blueprint/privacidade", destination: "/blueprint/privacidade.html" },
+  { source: "/blueprint/termos", destination: "/blueprint/termos.html" },
+  { source: "/squad", destination: "/squad/index.html" },
+];
+
 const nextConfig: NextConfig = {
   // Não anunciar "X-Powered-By: Next.js" (auditoria de segurança do NEX OS).
   poweredByHeader: false,
+  async rewrites() {
+    return { beforeFiles: staticProductRewrites, afterFiles: [], fallback: [] };
+  },
   async headers() {
     return [
       {

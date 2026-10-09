@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/nexTracking";
+import { PRODUCTS } from "@/lib/products";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const router = useRouter();
 
   // Handle scroll to change navbar appearance
@@ -26,6 +28,20 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setPickerOpen(false);
+    const onClick = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest("[data-nex-picker]")) setPickerOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("click", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("click", onClick);
+    };
+  }, [pickerOpen]);
 
   const navLinks = [
     { label: "O Método", href: "/#metodo" },
@@ -48,18 +64,67 @@ export function Navbar() {
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
           
-          {/* LOGO */}
-          <Link href="/" className="relative z-50 flex items-center cursor-pointer">
-            <div className={`relative transition-all duration-500 ${isScrolled ? 'w-[120px] h-[36px]' : 'w-[160px] h-[48px]'}`}>
-              <Image 
-                src="/logo-nex-neon.png" 
-                alt="NEX Logo" 
-                fill 
-                className="object-contain" 
-                priority
-              />
-            </div>
-          </Link>
+          {/* LOGO: um clique abre os produtos NEX (mesmo seletor dos produtos) */}
+          <div className="relative z-50" data-nex-picker>
+            <button
+              type="button"
+              aria-label="Escolher site NEX"
+              aria-expanded={pickerOpen}
+              aria-haspopup="true"
+              onClick={() => {
+                setPickerOpen((v) => !v);
+                trackEvent("cta_click", { metadata: { cta: "navbar_logo_picker" } });
+              }}
+              className="flex items-center cursor-pointer"
+            >
+              <div className={`relative transition-all duration-500 ${isScrolled ? 'w-[120px] h-[36px]' : 'w-[160px] h-[48px]'}`}>
+                <Image
+                  src="/logo-nex-neon.png"
+                  alt="NEX Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </button>
+            <AnimatePresence>
+              {pickerOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-0 top-full mt-4 w-[min(92vw,540px)] rounded-3xl border border-white/15 bg-[#090b0d]/95 p-5 shadow-[0_28px_75px_rgba(0,0,0,0.65)] backdrop-blur-2xl"
+                >
+                  <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4 text-[10px] tracking-[0.14em] text-zinc-200">
+                    <span>EXPLORE A NEX</span>
+                    <span className="tracking-normal text-zinc-500">Escolha seu próximo passo</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {PRODUCTS.map((p) => (
+                      <a
+                        key={p.href}
+                        href={p.href}
+                        onClick={() => trackEvent("cta_click", { metadata: { cta: `picker_${p.href.slice(1)}` } })}
+                        className="group flex flex-col items-center rounded-2xl border border-transparent px-2 py-4 text-center transition hover:border-white/15 hover:bg-white/[0.03]"
+                      >
+                        <span className="mb-3 grid h-14 w-14 place-items-center rounded-full border border-white/25 bg-gradient-to-br from-white/10 to-nex-orange/10 text-sm font-semibold text-zinc-200 transition group-hover:-translate-y-1 group-hover:border-nex-orange/60 group-hover:text-nex-orange">
+                          {p.n}
+                        </span>
+                        <strong className="text-xs font-semibold text-zinc-100">{p.name}</strong>
+                        <span className="mt-1 text-[10px] leading-snug text-zinc-500">{p.detail}</span>
+                      </a>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 border-t border-white/10 pt-4 text-[11px]">
+                    <Link href="/" className="text-zinc-400 hover:text-nex-orange" onClick={() => setPickerOpen(false)}>Início</Link>
+                    <Link href="/ia" className="text-zinc-400 hover:text-nex-orange" onClick={() => setPickerOpen(false)}>Falar com o Havi</Link>
+                    <Link href="/links" className="text-zinc-400 hover:text-nex-orange" onClick={() => setPickerOpen(false)}>Todos os links</Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* DESKTOP LINKS */}
           <div className="hidden md:flex items-center space-x-10">

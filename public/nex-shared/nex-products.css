@@ -1,0 +1,6 @@
+/* NEX — ajustes de acessibilidade comuns aos produtos (alvos de toque e foco visível). */
+:focus-visible{outline:2px solid #f95b07;outline-offset:3px}
+@media (max-width:760px){
+  footer a,.footer a,.footer-links a{display:inline-block;padding:9px 2px;min-height:32px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}

@@ -47,7 +47,7 @@ function loadPersisted(currentPage: string): ChatMessage[] {
   }
 }
 
-export function useRaviChat(currentPage: string, defaultSection = "") {
+export function useRaviChat(currentPage: string, defaultSection = "", pageLabel?: string) {
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadPersisted(currentPage));
   const [isStreaming, setIsStreaming] = useState(false);
 
@@ -79,7 +79,7 @@ export function useRaviChat(currentPage: string, defaultSection = "") {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: nextMessages.map(({ role, content }) => ({ role, content })),
-          currentPage,
+          currentPage: pageLabel ?? currentPage,
           currentSection,
         }),
       });

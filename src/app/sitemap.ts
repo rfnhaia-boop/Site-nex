@@ -30,6 +30,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    // Produtos NEX (Blueprint, Context Agent, Squad, Site Studio)
+    ...[
+      ["/blueprint", 0.9],
+      ["/context-agent", 0.8],
+      ["/squad", 0.8],
+      ["/studio", 0.8],
+      ["/studio/briefing", 0.6],
+    ].map(([path, priority]) => ({
+      url: `${SITE_URL}${path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: priority as number,
+    })),
     // /ia é ferramenta interativa (chat), não conteúdo — não entra no sitemap nem é indexada
     // (ver robots: false em src/app/ia/layout.tsx). /login também não entra (robots: false).
   ];

@@ -1,5 +1,4 @@
-import { generateText } from 'ai';
-import { geminiModel } from './gemini';
+import { generateTextResilient } from './generate';
 
 const EXTRACTION_PROMPT = `Você lê uma conversa entre um visitante e o Havi (agente da NEX), dentro da skill "Análise de IA no negócio". Extraia em JSON estrito os dados de contato já confirmados pelo visitante — nunca invente ou deduza além do que foi escrito.
 
@@ -24,12 +23,7 @@ export async function extractAnalysisFields(messages) {
       .map((m) => `${m.role === 'user' ? 'Visitante' : 'Havi'}: ${m.content}`)
       .join('\n');
 
-    const { text } = await generateText({
-      model: geminiModel,
-      system: EXTRACTION_PROMPT,
-      prompt: conversationText,
-      providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } },
-    });
+    const text = await generateTextResilient({ system: EXTRACTION_PROMPT, prompt: conversationText });
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return null;

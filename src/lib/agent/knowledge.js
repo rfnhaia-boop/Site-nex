@@ -21,7 +21,7 @@ export function readKnowledgeDoc(id) {
 // chunk nenhum -- só trava). Testado e confirmado: com só isso aqui, 8/8
 // chamadas de teste voltaram rápido; com a base completa (9 docs, ~12KB),
 // quase metade falhava.
-const CORE_DOCS = ['nex-company', 'capabilities'];
+const CORE_DOCS = ['nex-company', 'capabilities', 'products'];
 
 // Os outros docs só entram quando o assunto da mensagem parece pedir --
 // mantém o prompt pequeno na maioria das conversas.

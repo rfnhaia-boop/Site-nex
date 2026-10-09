@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#030405" />
+    <title>NEX Campaign Hub</title>
+    <link rel="stylesheet" href="/central/assets/campaign-hub.css" />
+  <style>
+.nex-network{position:relative;z-index:2;background:#080808;border-top:1px solid rgba(249,91,7,.22);padding:26px max(24px,calc((100% - 1200px)/2));color:#fff;font-family:Inter,Arial,sans-serif}.nex-network-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.nex-network-label{font-size:11px;letter-spacing:.16em;color:#a8a8a8}.nex-network nav{display:flex;gap:10px;flex-wrap:wrap}.nex-network a{display:inline-flex;align-items:center;border:1px solid #303030;border-radius:10px;padding:11px 15px;color:#e9e9e9;text-decoration:none;font-size:13px;transition:border-color .2s,color .2s}.nex-network a:hover,.nex-network a:focus-visible{border-color:#F95B07;color:#F95B07}.nex-network a[aria-current=page]{border-color:rgba(249,91,7,.5);color:#F95B07}@media(max-width:600px){.nex-network-inner{align-items:flex-start;flex-direction:column}.nex-network nav{width:100%}.nex-network a{flex:1;justify-content:center;white-space:nowrap}}
+</style>
+<link rel="icon" type="image/png" sizes="32x32" href="/central/assets/nex-favicon-32.png?v=n2">
+<link rel="apple-touch-icon" sizes="180x180" href="/central/assets/nex-favicon-180.png?v=n2">
+
+
+<link rel="stylesheet" href="/nex-shared/nex-navigation.css"><link rel="stylesheet" href="/nex-shared/nex-products.css"><link rel="canonical" href="https://nex.newflowsys.cloud/central"><meta name="robots" content="noindex,follow"><meta property="og:type" content="website"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="NEX"><meta property="og:url" content="https://nex.newflowsys.cloud/central"><meta property="og:title" content="NEX Campaign Hub"><meta property="og:description" content="NEX Campaign Hub"><meta property="og:image" content="https://nex.newflowsys.cloud/og-nex.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><script src="/nex-shared/nex-config.js"></script></head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+    <div class="light-beam beam-one" aria-hidden="true"></div>
+    <div class="light-beam beam-two" aria-hidden="true"></div>
+    <header class="hub-header">
+      <a class="hub-brand" href="/central"
+        ><img src="/central/assets/nex-logo.png" alt="NEX" /><span>CAMPAIGN HUB</span></a
+      >
+      <nav aria-label="Seções da central">
+        <button class="nav-tab is-active" data-view="overview">
+          Visão geral
+        </button>
+        <button class="nav-tab" data-view="week">Semana</button>
+        <button class="nav-tab" data-view="library">Entregáveis</button>
+        <button class="nav-tab" data-view="funnel">Funil</button>
+      </nav>
+      <a class="header-action" href="/blueprint" target="_blank"
+        >Abrir site ↗</a
+      >
+    </header>
+
+    <section class="campaign-selector" aria-label="Campanhas NEX">
+      <button class="campaign-pill is-active" data-campaign="campaign1">
+        <small>CAMPANHA 01</small><b>Campanha completa</b><span>Site + Growth Scan</span>
+      </button>
+      <button class="campaign-pill" data-campaign="campaign2">
+        <small>CAMPANHA 02</small><b>Campanha completa</b><span>Segundo site</span>
+      </button>
+      <button class="campaign-pill is-future" data-campaign="campaign3">
+        <small>CAMPANHA 03</small><b>Squad</b><span>3 posts · 3 carrosséis · 4 anúncios</span>
+      </button>
+    </section>
+
+    <main>
+      <section class="view is-active" id="overview-view">
+        <div class="hero-shell">
+          <div>
+            <p class="eyebrow">OPERAÇÃO COMERCIAL · NEX</p>
+            <h1>Tudo que criamos, dentro da mesma jornada.</h1>
+            <p class="hero-copy">
+              Mostre a campanha, escolha o que entra nesta semana e acompanhe o
+              caminho completo até a reunião.
+            </p>
+            <div class="hero-actions">
+              <button class="primary" data-open-view="week">
+                Planejar esta semana</button
+              ><button class="secondary" data-open-view="library">
+                Ver entregáveis
+              </button>
+            </div>
+          </div>
+          <div class="hero-showcase">
+            <div class="showcase-top">
+              <span>CRIATIVO EM DESTAQUE</span><b id="showcase-label">ANÚNCIO 04 · AÇÃO DIRETA</b>
+            </div>
+            <img
+              id="showcase-image"
+              src="/central/assets/campaign/ad-04.png"
+              alt="Anúncio da análise gratuita NEX"
+            />
+            <div class="showcase-bottom">
+              <div><small>DESTINO</small><b>Context Agent</b></div>
+              <button class="showcase-open" id="showcase-open" data-asset-open="ad-04">
+                Ver peça e copy ↗
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="metric-strip">
+          <article>
+            <small id="metric-one-label">ORGÂNICO</small><strong id="metric-one-value">12</strong><span id="metric-one-copy">peças visuais</span>
+          </article>
+          <article>
+            <small id="metric-two-label">TRÁFEGO</small><strong id="metric-two-value">4</strong
+            ><span id="metric-two-copy">ângulos de anúncio</span>
+          </article>
+          <article>
+            <small id="metric-three-label">CONVERSÃO</small><strong id="metric-three-value">1</strong
+            ><span id="metric-three-copy">jornada conectada</span>
+          </article>
+          <article>
+            <small>STATUS</small><strong class="status-ready">PRONTO</strong
+            ><span>para revisão e publicação</span>
+          </article>
+        </div>
+        <div class="overview-grid">
+          <section class="glass next-week">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">PLANO ATIVO</p>
+                <h2>Esta semana</h2>
+              </div>
+              <button class="text-button" data-open-view="week">
+                Editar plano ↗
+              </button>
+            </div>
+            <div id="week-preview" class="week-preview"></div>
+          </section>
+          <section class="glass journey-mini">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">CAMINHO DO LEAD</p>
+                <h2>Da atenção à conversa</h2>
+              </div>
+            </div>
+            <div class="mini-flow">
+              <span>Conteúdo</span><i></i><span>Landing</span><i></i
+              ><span>Context Agent</span><i></i><span>Agenda</span>
+            </div>
+            <p>
+              Origem, campanha, lead e solicitação de horário permanecem
+              conectados.
+            </p>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="week-view">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">PLANEJAMENTO SEMANAL</p>
+            <h1>O que começa agora e onde queremos chegar.</h1>
+          </div>
+          <div class="week-actions">
+            <button class="secondary" id="reset-week">Restaurar plano</button
+            ><button class="primary" id="save-week">Salvar semana</button>
+          </div>
+        </div>
+        <div class="week-layout">
+          <div id="week-board" class="week-board"></div>
+          <aside class="glass week-summary">
+            <p class="eyebrow">RESUMO PARA O GU</p>
+            <h2 id="summary-title">Semana NEX</h2>
+            <div id="summary-list"></div>
+            <button class="primary full" id="copy-week">
+              Copiar resumo da semana
+            </button>
+            <p class="save-note" id="save-note">
+              As alterações ficam salvas neste navegador.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="library-view">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">BIBLIOTECA DA TESE</p>
+            <h1>Tudo que já existe, reunido em um lugar.</h1>
+          </div>
+          <div class="filter-row">
+            <button class="filter is-active" data-filter="all">Tudo</button
+            ><button class="filter" data-filter="organic">Orgânico</button
+            ><button class="filter" data-filter="carousel">Carrossel</button
+            ><button class="filter" data-filter="paid">Anúncios</button
+            ><button class="filter" data-filter="deliverable">Entregáveis</button>
+          </div>
+        </div>
+        <div class="library-summary" id="library-summary"></div>
+        <div id="asset-grid" class="asset-grid"></div>
+      </section>
+
+      <section class="view" id="funnel-view">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow" id="funnel-eyebrow">FUNIL BLUEPRINT NEX</p>
+            <h1 id="funnel-title">A operação inteira, da atenção ao aprendizado.</h1>
+          </div>
+          <a class="primary link-button" href="/blueprint" target="_blank"
+            >Testar jornada ↗</a
+          >
+        </div>
+        <div class="funnel-switcher" id="funnel-switcher" aria-label="Escolher funil"></div>
+        <section class="funnel-context glass">
+          <div>
+            <small>FUNIL ATIVO</small>
+            <h2 id="active-funnel-name"></h2>
+          </div>
+          <p id="active-funnel-description"></p>
+        </section>
+        <div class="funnel-line" id="funnel-line"></div>
+        <div class="remarketing-loop" id="remarketing-loop"></div>
+        <div class="funnel-details">
+          <section class="glass">
+            <p class="eyebrow" id="funnel-detail-1-label"></p>
+            <h2 id="funnel-detail-1-title"></h2>
+            <p id="funnel-detail-1-copy"></p>
+            <button
+              class="text-button"
+              data-open-view="library"
+              data-filter-jump="paid"
+            >
+              Abrir criativos ↗
+            </button>
+          </section>
+          <section class="glass">
+            <p class="eyebrow" id="funnel-detail-2-label"></p>
+            <h2 id="funnel-detail-2-title"></h2>
+            <p id="funnel-detail-2-copy"></p>
+            <div class="inline-links">
+              <a href="/blueprint" target="_blank">Landing ↗</a
+              ><a href="/context-agent" target="_blank">Context Agent ↗</a>
+            </div>
+          </section>
+          <section class="glass">
+            <p class="eyebrow" id="funnel-detail-3-label"></p>
+            <h2 id="funnel-detail-3-title"></h2>
+            <p id="funnel-detail-3-copy"></p>
+            <a class="text-button" href="/blueprint/agendar" target="_blank"
+              >Abrir agendamento ↗</a
+            >
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="asset-modal">
+      <button class="modal-close" aria-label="Fechar">×</button>
+      <div class="modal-grid">
+        <img id="modal-image" alt="Peça NEX ampliada" />
+        <div class="modal-copy">
+          <p class="eyebrow" id="modal-type"></p>
+          <h2 id="modal-title"></h2>
+          <p id="modal-purpose"></p>
+          <div class="copy-box">
+            <small>COPY</small>
+            <p id="modal-text"></p>
+            <button class="secondary full" id="copy-asset">Copiar copy</button>
+          </div>
+          <a class="primary full asset-download" id="download-asset" download>
+            Baixar peça em PNG ↓
+          </a>
+          <div class="destination">
+            <small>DESTINO</small><a id="modal-destination" target="_blank"></a>
+          </div>
+        </div>
+      </div>
+    </dialog>
+    <script src="/central/assets/campaign-hub.js?v=squad-20261001" defer></script>
+  <footer class="nex-network" aria-label="Campanhas NEX"><div class="nex-network-inner"><span class="nex-network-label">EXPLORE A NEX</span><nav aria-label="Navegação entre campanhas"><a href="/blueprint" aria-current="page">Central de campanhas</a><a href="/blueprint">01 · Blueprint</a><a href="/context-agent">02 · Context Agent</a></nav></div></footer>
+<script src="/nex-shared/nex-navigation.js" defer></script></body>
+</html>

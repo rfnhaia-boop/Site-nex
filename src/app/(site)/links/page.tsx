@@ -21,6 +21,7 @@ import { useRaviChat } from "@/lib/useRaviChat";
 import { trackEvent } from "@/lib/nexTracking";
 import DiagnosticFlow from "@/components/DiagnosticFlow";
 import ChatComposer from "@/components/ChatComposer";
+import { Linkify } from "@/components/Linkify";
 
 const RESUME_AFTER_LOGIN_KEY = "havi_post_login_resume_links";
 
@@ -164,7 +165,7 @@ function ChatBubble({
               : "bg-white/[0.04] backdrop-blur-xl border border-white/10 text-zinc-100 rounded-bl-md"
         }`}
       >
-        {content || (isStreaming && (
+        {content ? <Linkify text={content} /> : (isStreaming && (
           <span className="inline-flex gap-1.5 py-1">
             <span className="w-1.5 h-1.5 rounded-full bg-nex-orange animate-bounce [animation-delay:-0.3s]" />
             <span className="w-1.5 h-1.5 rounded-full bg-nex-orange animate-bounce [animation-delay:-0.15s]" />

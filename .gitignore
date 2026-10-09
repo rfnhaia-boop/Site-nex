@@ -44,3 +44,9 @@ prisma/dev.db-journal
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dados locais e scripts temporarios
+.data/
+q.tmp.mjs
+*.tmp.mjs
+lh.tmp/

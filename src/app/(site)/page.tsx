@@ -1113,6 +1113,10 @@ export default function Home() {
                   <a href="/" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Início</a>
                   <a href="/ia" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Fale com o Havi</a>
                   <a href="/ia" translate="no" className="notranslate text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Solicitar Diagnóstico</a>
+                  <a href="/studio" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Site Studio</a>
+                  <a href="/blueprint" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Blueprint NEX</a>
+                  <a href="/context-agent" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Context Agent</a>
+                  <a href="/squad" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Squad NEX</a>
                   <a href="/automacao-ia-para-empresas-jundiai" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Automação com IA</a>
                   <a href="/criacao-de-sites-jundiai" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Criação de sites</a>
                   <a href="/sistemas-sob-medida-jundiai" className="text-sm text-zinc-400 hover:text-white hover:translate-x-1 transition-all duration-300">Sistemas sob medida</a>

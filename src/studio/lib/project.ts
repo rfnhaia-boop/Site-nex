@@ -1,0 +1,4 @@
+export const stages=[['analysis','Análise do briefing'],['payment','Aguardando contratação'],['queued','Na fila de produção'],['production','Primeira versão'],['review','Prévia e reunião'],['adjustments','Ajustes finais'],['done','Publicado']] as const;
+export type Operation={stage:string;message:string;internal_note?:string;preview:string;meeting:string;paid_at:string;agreed_amount:number;materials_ready:number;due:string;updated:string};
+export function validWebLink(value:string){if(!value)return true;try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password;}catch{return false}}
+export function addBusinessDays(iso:string,days=10){const d=new Date(iso);let n=0;while(n<days){d.setUTCDate(d.getUTCDate()+1);if(d.getUTCDay()!==0&&d.getUTCDay()!==6)n++;}return d.toISOString().slice(0,10)}
