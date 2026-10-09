@@ -50,6 +50,9 @@ export default function StudioLayout({ children }: { children: React.ReactNode }
     <html lang="pt-BR" className="dark">
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <link rel="preload" as="font" type="font/woff2" href="/studio/assets/inter-400.woff2" crossOrigin="anonymous" />
+        <link rel="preload" as="font" type="font/woff2" href="/studio/assets/inter-600.woff2" crossOrigin="anonymous" />
+        <link rel="preload" as="font" type="font/woff2" href="/studio/assets/inter-700.woff2" crossOrigin="anonymous" />
         <link rel="stylesheet" href="/nex-shared/nex-navigation.css" />
         <link rel="stylesheet" href="/nex-shared/nex-products.css" />
         <meta name="theme-color" content="#07090b" />
