@@ -14,7 +14,11 @@ import {
   ArrowLeft,
   Sparkles,
   Rocket,
-  LogOut
+  LogOut,
+  Globe,
+  Compass,
+  Brain,
+  Layers
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRaviChat } from "@/lib/useRaviChat";
@@ -423,6 +427,10 @@ export default function LinksPage() {
                 trackAs="links_diagnostico_ia"
                 onClick={() => setDiagnosticOpen(true)}
               />
+              <LinkCard href="/studio" icon={Globe} title="Site Studio" subtitle="Crie seu site com a NEX. Comece pelo briefing." trackAs="links_studio" />
+              <LinkCard href="/blueprint" icon={Compass} title="Blueprint NEX" subtitle="Reunião gratuita e plano de crescimento." trackAs="links_blueprint" />
+              <LinkCard href="/context-agent" icon={Brain} title="Context Agent" subtitle="Seu contexto e diagnóstico em 12 perguntas." trackAs="links_context_agent" />
+              <LinkCard href="/squad" icon={Layers} title="Squad NEX" subtitle="Equipe de tecnologia híbrida para sua empresa." trackAs="links_squad" />
               <LinkCard isLast href="/" icon={Rocket} title="Explore o Futuro" subtitle="Veja nossos projetos em ação." trackAs="links_explore_site" />
             </motion.div>
           </>
