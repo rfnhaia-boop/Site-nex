@@ -1147,7 +1147,6 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col space-y-3">
                   <a href="https://www.instagram.com/nex_flow_oficial?igsh=enF3cTEzazF1cTBx&utm_source=qr" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("external_link_click", { metadata: { link: "instagram" } })} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">Instagram</a>
-                  <a href="https://linkedin.com/company/nex" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("external_link_click", { metadata: { link: "linkedin" } })} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">LinkedIn</a>
                   <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">WhatsApp Direto</a>
                 </div>
               </div>

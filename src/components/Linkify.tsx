@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 // Os caminhos que o Havi pode sugerir viram links clicáveis (só rotas conhecidas do site, nunca URL externa livre).
-const KNOWN = /(\/(?:studio(?:\/briefing|\/painel)?|blueprint(?:\/agendar|\/growth-scan)?|context-agent|squad|ia|havi|links|automacao-ia-para-empresas-jundiai|criacao-de-sites-jundiai|sistemas-sob-medida-jundiai|diagnostico-gratuito)(?![\w/-]))/g;
+const KNOWN = /(https:\/\/wa\.me\/\d+|\/(?:studio(?:\/briefing|\/painel)?|blueprint(?:\/agendar|\/growth-scan)?|context-agent|squad|ia|havi|links|automacao-ia-para-empresas-jundiai|criacao-de-sites-jundiai|sistemas-sob-medida-jundiai|diagnostico-gratuito)(?![\w/-]))/g;
 
 export function Linkify({ text, className = "text-nex-orange underline underline-offset-2 hover:opacity-80", target }: { text: string; className?: string; target?: string }) {
   const parts: ReactNode[] = [];

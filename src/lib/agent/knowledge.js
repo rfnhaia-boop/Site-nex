@@ -21,11 +21,13 @@ export function readKnowledgeDoc(id) {
 // chunk nenhum -- só trava). Testado e confirmado: com só isso aqui, 8/8
 // chamadas de teste voltaram rápido; com a base completa (9 docs, ~12KB),
 // quase metade falhava.
-const CORE_DOCS = ['nex-company', 'capabilities', 'products'];
+const CORE_DOCS = ['capabilities', 'products'];
 
 // Os outros docs só entram quando o assunto da mensagem parece pedir --
 // mantém o prompt pequeno na maioria das conversas.
 const TOPIC_DOCS = [
+  // identidade/princípios da NEX: só quando a conversa pergunta sobre a empresa (poupa ~600 tokens por mensagem)
+  { id: 'nex-company', pattern: /quem (s[ãa]o|[ée])|sobre (a )?nex|o que (a )?nex|a nex (é|faz)|voc[eê]s (s[ãa]o|fazem)|miss[ãa]o|princ[ií]pio|filosofia|diferencial|ag[eê]ncia|empresa de voc[eê]s|tese|como pensam/i },
   { id: 'commercial', pattern: /pre[çc]o|contrat|investimento|quanto custa|plano[s]?\b|proposta|comercial|valor/i },
   { id: 'faq', pattern: /d[uú]vida|pergunta|faq|como funciona/i },
   { id: 'methodology', pattern: /metodologia|processo de trabalho|como voc[eê]s trabalham|abordagem/i },

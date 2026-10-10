@@ -203,7 +203,7 @@
         selected.map((demand) => "• " + demand).join("\n")
       : baseMessage;
     document.getElementById("result-contact").href =
-      "https://wa.me/" + (window.NEX_WHATSAPP_NUMBER || "5511953878155") + "?text=" + encodeURIComponent(message);
+      "https://wa.me/" + (window.NEX_WHATSAPP_NUMBER || "5511936202934") + "?text=" + encodeURIComponent(message);
   };
   const leadIds = () => {
     let visitor = localStorage.getItem("nex_visitor");

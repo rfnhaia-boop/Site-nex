@@ -155,20 +155,27 @@ export async function POST(request) {
 
   async function attempt(model, controller, providerOptions) {
     let text = '';
+    let closed = false;
+    const abort = new AbortController();
+    const timer = setTimeout(() => {
+      // Sem resposta a tempo: corta de verdade (senão o fluxo atrasado se mistura com a próxima tentativa).
+      closed = true;
+      abort.abort();
+    }, ATTEMPT_TIMEOUT_MS);
     try {
-      const result = streamText({ model, system: systemPrompt, messages, providerOptions });
-      const streamDone = (async () => {
-        for await (const chunk of result.textStream) {
-          text += chunk;
-          controller.enqueue(encoder.encode(chunk));
-        }
-      })();
-      await Promise.race([
-        streamDone,
-        new Promise((resolve) => setTimeout(resolve, ATTEMPT_TIMEOUT_MS)),
-      ]);
+      // maxRetries: 0 -- o próprio SDK tentaria de novo com espera quando bate o limite (429); aqui o
+      // rodízio de modelos já faz isso, bem mais rápido.
+      const result = streamText({ model, system: systemPrompt, messages, providerOptions, abortSignal: abort.signal, maxRetries: 0 });
+      for await (const chunk of result.textStream) {
+        if (closed) break;
+        text += chunk;
+        controller.enqueue(encoder.encode(chunk));
+      }
     } catch (err) {
-      console.error('[chat] falha ao chamar modelo:', err?.message || err);
+      if (!closed) console.error('[chat] falha ao chamar modelo:', err?.message || err);
+    } finally {
+      clearTimeout(timer);
+      closed = true;
     }
     return text;
   }
@@ -176,7 +183,7 @@ export async function POST(request) {
   // Groq é a resposta principal (bem mais rápido). Às vezes volta vazio do nada
   // (falha passageira do modelo, não da nossa infra) -- tenta até 3 vezes antes
   // de cair pro Gemini, que hoje é reserva menos confiável (cota diária curta).
-  const GROQ_ATTEMPTS = 4; // fast → qwen → big → fast
+  const GROQ_ATTEMPTS = CHAT_CHAIN.length + 1; // percorre a fila toda e dá mais uma chance ao primeiro
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -197,6 +204,15 @@ export async function POST(request) {
         finalText = await attempt(geminiModel, controller, {
           google: { thinkingConfig: { thinkingBudget: 0 } },
         });
+      }
+
+      // Todos os modelos ocupados (picos no plano gratuito): em vez de erro, uma resposta honesta com saída.
+      if (!finalText.trim()) {
+        controller.enqueue(
+          encoder.encode(
+            'Estou com muita gente conversando agora e não consegui responder. Tenta de novo em 1 minuto ou fala direto com a equipe pelo WhatsApp: https://wa.me/5511936202934',
+          ),
+        );
       }
 
       controller.close();
