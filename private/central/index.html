@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/central/assets/nex-favicon-180.png?v=n2">
 <link rel="stylesheet" href="/nex-shared/nex-navigation.css">
 
-<link rel="stylesheet" href="/nex-shared/nex-products.css"><link rel="canonical" href="https://nex.newflowsys.cloud/central"><meta name="robots" content="noindex,follow"><meta property="og:type" content="website"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="NEX"><meta property="og:url" content="https://nex.newflowsys.cloud/central"><meta property="og:title" content="NEX Campaign Hub"><meta property="og:description" content="NEX Campaign Hub"><meta property="og:image" content="https://nex.newflowsys.cloud/og-nex.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><script src="/nex-shared/nex-config.js"></script></head>
+<style>#results-root{display:grid;gap:18px}.res-card{padding:26px}.res-card h2{margin:0 0 6px;font-size:20px}.res-sub{margin:0 0 16px;color:#b9bbc0;font-size:14px}.res-empty{color:#b9bbc0;margin:12px 0}.res-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0 20px}.res-kpi{padding:16px;border-radius:16px;background:#ffffff0a;border:1px solid #ffffff1f;display:grid;gap:4px}.res-kpi strong{font-size:30px;color:#f95b07}.res-kpi span{font-size:13px;color:#b9bbc0}.res-table{width:100%;border-collapse:collapse;font-size:14px}.res-table th,.res-table td{text-align:left;padding:10px 8px;border-bottom:1px solid #ffffff1a}.res-table th{color:#b9bbc0;font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase}.res-funnel{margin:18px 0 8px}.res-funnel h3{font-size:16px;margin:0 0 10px}.res-step{display:grid;grid-template-columns:minmax(120px,220px) 1fr minmax(120px,210px);gap:12px;align-items:center;margin:7px 0;font-size:13px}.res-bar{height:10px;border-radius:99px;background:#ffffff14;overflow:hidden}.res-bar i{display:block;height:100%;background:#f95b07;border-radius:99px}.res-step-name{overflow-wrap:anywhere}.res-step-n{color:#b9bbc0}@media(max-width:700px){.res-kpis{grid-template-columns:1fr 1fr}.res-step{grid-template-columns:1fr}.res-table{display:block;overflow-x:auto}}</style><link rel="stylesheet" href="/nex-shared/nex-products.css"><link rel="canonical" href="https://nex.newflowsys.cloud/central"><meta name="robots" content="noindex,follow"><meta property="og:type" content="website"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="NEX"><meta property="og:url" content="https://nex.newflowsys.cloud/central"><meta property="og:title" content="NEX Campaign Hub"><meta property="og:description" content="NEX Campaign Hub"><meta property="og:image" content="https://nex.newflowsys.cloud/og-nex.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><script src="/nex-shared/nex-config.js"></script></head>
   <body>
     <div class="ambient" aria-hidden="true"></div>
     <canvas id="ambient-canvas" aria-hidden="true"></canvas>
@@ -30,7 +30,7 @@
         </button>
         <button class="nav-tab" data-view="week">Semana</button>
         <button class="nav-tab" data-view="library">Entregáveis</button>
-        <button class="nav-tab" data-view="funnel">Funil</button>
+        <button class="nav-tab" data-view="funnel">Funil</button><button class="nav-tab" data-view="results">Resultados</button>
       </nav>
       <a class="header-action" href="/blueprint" target="_blank"
         >Abrir site ↗</a
@@ -178,7 +178,7 @@
         <div id="asset-grid" class="asset-grid"></div>
       </section>
 
-      <section class="view" id="funnel-view">
+      <section class="view" id="results-view"><div class="page-head"><div><p class="eyebrow">NÚMEROS REAIS · ÚLTIMOS 30 DIAS</p><h1>O que está acontecendo no site agora.</h1></div><button class="primary link-button" id="results-refresh" type="button">Atualizar</button></div><div id="results-root"></div></section><section class="view" id="funnel-view">
         <div class="page-head">
           <div>
             <p class="eyebrow" id="funnel-eyebrow">FUNIL BLUEPRINT NEX</p>
@@ -256,5 +256,5 @@
     </dialog>
     <script src="/central/assets/campaign-hub.js?v=squad-20261001" defer></script>
   <footer class="nex-network" aria-label="Campanhas NEX"><div class="nex-network-inner"><span class="nex-network-label">EXPLORE A NEX</span><nav aria-label="Navegação entre campanhas"><a href="/blueprint" aria-current="page">Central de campanhas</a><a href="/blueprint">01 · Blueprint</a><a href="/context-agent">02 · Context Agent</a></nav></div></footer>
-<script src="/nex-shared/nex-navigation.js" defer></script></body>
+<script src="/central/assets/central-results.js" defer></script><script src="/nex-shared/nex-navigation.js" defer></script></body>
 </html>
