@@ -88,4 +88,28 @@
   $('edit-result').addEventListener('click',()=>{step=0;render()});
   $('copy-result').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(buildText(orderedPillars()));$('copy-result').textContent='Resumo copiado ✓';window.NEXTracking?.track('growth_scan_summary_copied')}catch{$('copy-result').textContent='Não foi possível copiar'}});
   $('print-result').addEventListener('click',()=>{window.NEXTracking?.track('growth_scan_printed');window.print()});
+  const SCAN_KEY = 'nex_scan_draft_v1';
+  const saveScan = () => {
+    try {
+      localStorage.setItem(SCAN_KEY, JSON.stringify({at: Date.now(), started: !$('questions-screen').hidden, done: !$('result-screen').hidden, person: person || $('scan-name').value, company: company || $('scan-company').value, responses, step}));
+    } catch { /* sem armazenamento */ }
+  };
+  try {
+    const d = JSON.parse(localStorage.getItem(SCAN_KEY) || 'null');
+    if (d && Date.now() - d.at < 864e5) {
+      $('scan-name').value = d.person || '';
+      $('scan-company').value = d.company || '';
+      if (d.started && !d.done) {
+        person = d.person; company = d.company;
+        Object.assign(responses, d.responses || {});
+        step = Math.min(d.step || 0, 7);
+        $('scan-consent').checked = true;
+        render();
+      }
+    }
+  } catch { /* rascunho inválido */ }
+  ['scan-name', 'scan-company'].forEach((id) => $(id).addEventListener('input', saveScan));
+  $('tool-next').addEventListener('click', () => setTimeout(saveScan, 0));
+  $('tool-back').addEventListener('click', () => setTimeout(saveScan, 0));
+  window.addEventListener('nex:scan-started', saveScan);
 })();

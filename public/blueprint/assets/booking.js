@@ -142,8 +142,29 @@
     const payload={product:'blueprint',source:'booking',name:values.name,phone:values.phone,company:values.company,status:'submitted',consent:true,answers:{sector:values.sector,offer:values.offer,goal:values.goal,challenge:values.challenge,customer_source:values.source,loss_point:values.loss,commercial_routine:values.routine,preferred_date:values.date,preferred_time:values.time}};
     try{await window.NEXLeads.submit(payload);$('submission-status').textContent='Solicitação registrada. Abrindo o WhatsApp…'}catch{$('submission-status').textContent='Sua solicitação ficou salva neste navegador e será reenviada automaticamente.'}
     window.NEXTracking?.track('booking_whatsapp_opened',{preferred_date:values.date,preferred_time:values.time});
+    try{localStorage.removeItem(DRAFT_KEY)}catch{}
     location.href=button.dataset.href;
     setTimeout(()=>{button.disabled=false},1200);
   });
+  const DRAFT_KEY = 'nex_booking_draft_v1';
+  const saveDraft = () => {
+    try {
+      if (!$('complete-state').hidden) return;
+      saveCurrent();
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({at: Date.now(), step, values}));
+    } catch { /* sem armazenamento: segue sem rascunho */ }
+  };
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (d && Date.now() - d.at < 864e5 && d.values && typeof d.step === 'number') {
+      Object.assign(values, d.values);
+      step = Math.min(Math.max(d.step, 0), 11);
+    }
+  } catch { /* rascunho inválido */ }
+  const bookingForm = $('booking-form');
+  bookingForm.addEventListener('input', saveDraft);
+  bookingForm.addEventListener('change', saveDraft);
+  bookingForm.addEventListener('click', () => setTimeout(saveDraft, 0));
+  addEventListener('pagehide', saveDraft);
   render();
 })();

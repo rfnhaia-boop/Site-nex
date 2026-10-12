@@ -270,6 +270,24 @@
   };
   addEventListener("online", flushQuiz);
   flushQuiz();
+  const QUIZ_DRAFT = "nex_squad_quiz_draft_v1";
+  const saveQuiz = () => {
+    try {
+      localStorage.setItem(QUIZ_DRAFT, JSON.stringify({ at: Date.now(), demands: selectedDemands(), name: document.getElementById("quiz-name")?.value || "", contact: document.getElementById("quiz-contact")?.value || "" }));
+    } catch { /* sem armazenamento */ }
+  };
+  try {
+    const d = JSON.parse(localStorage.getItem(QUIZ_DRAFT) || "null");
+    if (d && Date.now() - d.at < 864e5) {
+      form.querySelectorAll('input[name="demand"]').forEach((i) => { i.checked = (d.demands || []).includes(i.value); });
+      const n = document.getElementById("quiz-name"); const c = document.getElementById("quiz-contact");
+      if (n) n.value = d.name || "";
+      if (c) c.value = d.contact || "";
+      updateCount();
+    }
+  } catch { /* rascunho inválido */ }
+  form.addEventListener("input", saveQuiz);
+  form.addEventListener("change", saveQuiz);
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const consent = document.getElementById("quiz-consent");
