@@ -6,16 +6,18 @@
   if (!header) return false;
   const logo = header.querySelector('img[alt="NEX"],img.logo,.brand img');
   if (!logo) return false;
-  header.classList.add('nex-standard-nav');
+  // modo 'só seletor' (Context Agent): mantém o cabeçalho do app como está e só adiciona o menu de sites da logo
+  const only = !!window.NEX_NAV_PICKER_ONLY;
+  if (!only) header.classList.add('nex-standard-nav');
   const inner = header.querySelector('.header-inner');
-  if (inner) inner.classList.add('nex-standard-inner');
+  if (inner && !only) inner.classList.add('nex-standard-inner');
   const brand = logo.closest('a,button') || logo;
-  brand.classList.add('nex-brand-switch');
+  brand.classList.add(only ? 'nex-brand-picker' : 'nex-brand-switch');
   brand.setAttribute('role','button'); brand.setAttribute('tabindex','0');
   brand.setAttribute('aria-label','Escolher site NEX');
   brand.setAttribute('aria-expanded','false'); brand.setAttribute('aria-controls','nex-site-picker');
   const nav = header.querySelector('nav');
-  if (nav) {
+  if (nav && !only) {
     nav.classList.add('nex-local-nav');
     const cta=header.querySelector('.nav-cta,.header-action,.button.small');
     if(cta&&!nav.contains(cta)){const copy=cta.cloneNode(true);copy.classList.add('nex-mobile-cta');nav.append(copy);}
@@ -52,7 +54,7 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){const open=!popup.hidden;close();header.classList.remove('nex-nav-open');if(menu)menu.setAttribute('aria-expanded','false');if(open)brand.focus();}});
   addEventListener('resize',place);addEventListener('scroll',close,{passive:true});
   let menu=null;
-  if(nav){menu=document.createElement('button');menu.type='button';menu.className='nex-mobile-toggle';menu.textContent='☰';menu.setAttribute('aria-label','Abrir navegação');menu.setAttribute('aria-expanded','false');
+  if(nav && !only){menu=document.createElement('button');menu.type='button';menu.className='nex-mobile-toggle';menu.textContent='☰';menu.setAttribute('aria-label','Abrir navegação');menu.setAttribute('aria-expanded','false');
     (inner||header).append(menu);menu.addEventListener('click',()=>{const open=header.classList.toggle('nex-nav-open');menu.setAttribute('aria-expanded',String(open));close();});
     nav.addEventListener('click',()=>{header.classList.remove('nex-nav-open');menu.setAttribute('aria-expanded','false');});
   }

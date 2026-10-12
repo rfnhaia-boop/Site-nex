@@ -53,6 +53,7 @@ export default function ContextLayout({ children }: { children: React.ReactNode 
     <html lang="pt-BR">
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script dangerouslySetInnerHTML={{ __html: "window.NEX_NAV_PICKER_ONLY=true" }} />
         <link rel="stylesheet" href="/nex-shared/nex-navigation.css" />
         <link rel="stylesheet" href="/nex-shared/nex-products.css" />
       </head>

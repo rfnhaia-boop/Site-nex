@@ -4,3 +4,6 @@
   footer a,.footer a,.footer-links a{display:inline-block;padding:9px 2px;min-height:32px}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* imagens com width/height (evita salto de layout) mantêm a proporção quando o CSS do produto só define a largura */
+:where(img[width][height]){height:auto}
