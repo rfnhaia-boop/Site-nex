@@ -4,12 +4,12 @@
     {id:'phone',category:'SEU CONTATO',title:'Qual é o seu WhatsApp?',description:'Para confirmar o horário e combinar o envio do primeiro e-book.',kind:'tel',placeholder:'(11) 99999-9999'},
     {id:'company',category:'SUA EMPRESA',title:'Qual é o nome da sua empresa?',description:'Se ainda estiver construindo a marca, pode usar o nome provisório.',kind:'text',placeholder:'Nome da empresa',max:100},
     {id:'sector',category:'SUA EMPRESA',title:'Em que área sua empresa atua?',description:'Conte o setor ou o tipo de negócio.',kind:'text',placeholder:'Ex.: serviços, varejo, indústria...',max:120},
-    {id:'offer',category:'SUA OFERTA',title:'O que você vende hoje?',description:'Descreva o principal produto ou serviço em poucas palavras.',kind:'textarea',placeholder:'Ex.: projetos de esquadrias sob medida para residências',max:300},
-    {id:'goal',category:'SEU OBJETIVO',title:'O que você quer melhorar primeiro?',description:'Escolha o ponto que mais pesa neste momento.',kind:'choices',options:['Atrair clientes mais alinhados','Converter mais oportunidades','Deixar a marca e a oferta mais claras','Organizar o crescimento','Outro objetivo']},
-    {id:'challenge',category:'SEU DESAFIO',title:'O que mais trava o crescimento hoje?',description:'Pode escolher o principal gargalo percebido.',kind:'choices',options:['Pouca procura','Leads chegam, mas não fecham','Preço vira a maior objeção','Falta de processo ou acompanhamento','Ainda não sei']},
-    {id:'source',category:'AQUISIÇÃO',title:'De onde vêm seus clientes atualmente?',description:'Escolha o canal que mais traz oportunidades.',kind:'choices',options:['Indicações','Instagram ou redes sociais','Anúncios pagos','Site ou Google','Prospecção ativa','Outro canal']},
-    {id:'loss',category:'JORNADA DE VENDA',title:'Em que ponto você sente que perde oportunidades?',description:'Sua percepção já ajuda a orientar a primeira conversa.',kind:'choices',options:['Antes de entrarem em contato','Depois do primeiro contato','Na proposta ou negociação','Após a primeira compra','Ainda não consigo identificar']},
-    {id:'routine',category:'PROCESSO COMERCIAL',title:'Como você acompanha quem demonstra interesse?',description:'Queremos entender a rotina atual, sem julgar o estágio da empresa.',kind:'choices',options:['Tenho CRM e rotina definida','Acompanho por WhatsApp ou planilha','Faço quando consigo','Ainda não acompanho']},
+    {optional:true,id:'offer',category:'SUA OFERTA',title:'O que você vende hoje?',description:'Descreva o principal produto ou serviço em poucas palavras.',kind:'textarea',placeholder:'Ex.: projetos de esquadrias sob medida para residências',max:300},
+    {optional:true,id:'goal',category:'SEU OBJETIVO',title:'O que você quer melhorar primeiro?',description:'Escolha o ponto que mais pesa neste momento.',kind:'choices',options:['Atrair clientes mais alinhados','Converter mais oportunidades','Deixar a marca e a oferta mais claras','Organizar o crescimento','Outro objetivo']},
+    {optional:true,id:'challenge',category:'SEU DESAFIO',title:'O que mais trava o crescimento hoje?',description:'Pode escolher o principal gargalo percebido.',kind:'choices',options:['Pouca procura','Leads chegam, mas não fecham','Preço vira a maior objeção','Falta de processo ou acompanhamento','Ainda não sei']},
+    {optional:true,id:'source',category:'AQUISIÇÃO',title:'De onde vêm seus clientes atualmente?',description:'Escolha o canal que mais traz oportunidades.',kind:'choices',options:['Indicações','Instagram ou redes sociais','Anúncios pagos','Site ou Google','Prospecção ativa','Outro canal']},
+    {optional:true,id:'loss',category:'JORNADA DE VENDA',title:'Em que ponto você sente que perde oportunidades?',description:'Sua percepção já ajuda a orientar a primeira conversa.',kind:'choices',options:['Antes de entrarem em contato','Depois do primeiro contato','Na proposta ou negociação','Após a primeira compra','Ainda não consigo identificar']},
+    {optional:true,id:'routine',category:'PROCESSO COMERCIAL',title:'Como você acompanha quem demonstra interesse?',description:'Queremos entender a rotina atual, sem julgar o estágio da empresa.',kind:'choices',options:['Tenho CRM e rotina definida','Acompanho por WhatsApp ou planilha','Faço quando consigo','Ainda não acompanho']},
     {id:'date',category:'PREFERÊNCIA DE AGENDA',title:'Qual dia seria melhor para conversar?',description:'É uma preferência. A NEX confirma a disponibilidade pelo WhatsApp.',kind:'date'},
     {id:'time',category:'PREFERÊNCIA DE AGENDA',title:'Qual horário você prefere?',description:'Indique o horário de Brasília. A reunião depende de confirmação.',kind:'time'}
   ];
@@ -42,12 +42,12 @@
     $('step-percent').textContent = `${Math.round((step+1)/12*100)}%`;
     $('progress-fill').style.width = `${(step+1)/12*100}%`;
     window.NEXTracking?.track('booking_step_view',{step:step+1,total:12,question:q.id});
-    $('question-category').textContent = q.category;
+    $('question-category').textContent = q.category + (q.optional ? ' · OPCIONAL' : '');
     $('question-title').textContent = q.title;
-    $('question-description').textContent = q.description;
+    $('question-description').textContent = q.description + (q.optional ? ' Se preferir, pule e conte na conversa.' : '');
     $('question-error').textContent = '';
     $('previous-button').hidden = step === 0;
-    $('next-button').textContent = step === 11 ? 'Revisar solicitação ↗' : 'Continuar ↗';
+    $('next-button').textContent = step === 11 ? 'Revisar solicitação ↗' : (q.optional ? 'Continuar ou pular ↗' : 'Continuar ↗');
     if(q.kind === 'choices') {
       inputArea.innerHTML = `<div class="choice-list">${q.options.map((option,i)=>`<div class="choice"><input id="choice-${i}" name="answer" type="radio" value="${escapeHTML(option)}" ${values[q.id] === option || (values[q.id+'Other'] && i === q.options.length-1) ? 'checked' : ''}><label for="choice-${i}">${escapeHTML(option)}</label></div>`).join('')}</div><input id="other-answer" class="question-field other-field" type="text" maxlength="180" placeholder="Escreva em poucas palavras" value="${escapeHTML(values[q.id+'Other'] || '')}" style="display:none" aria-label="Especifique sua resposta">`;
       const radios = [...inputArea.querySelectorAll('input[type=radio]')];
@@ -96,7 +96,7 @@
     const q=questions[step];
     if(q.kind === 'choices'){
       const chosen=inputArea.querySelector('input[name=answer]:checked');
-      if(!chosen)return 'Escolha uma opção para continuar.';
+      if(!chosen){if(q.optional){delete values[q.id];delete values[q.id+'Other'];return ''}return 'Escolha uma opção para continuar.'}
       const other=$('other-answer');
       if(other.style.display!=='none'){
         if(!other.value.trim())return 'Conte em poucas palavras qual é a sua resposta.';
@@ -104,7 +104,7 @@
       }else{delete values[q.id+'Other'];values[q.id]=chosen.value}
     }else{
       const field=$('answer');const value=field.value.trim();
-      if(!value)return 'Preencha este campo para continuar.';
+      if(!value){if(q.optional){delete values[q.id];return ''}return 'Preencha este campo para continuar.'}
       if(q.kind==='tel' && value.replace(/\D/g,'').length<10)return 'Informe um número com DDD.';
       if(q.kind==='date' && value<today)return 'Escolha uma data a partir de hoje.';
       values[q.id]=value;
@@ -120,7 +120,7 @@
   };
   const formatDate = date => {const [y,m,d]=date.split('-');return `${d}/${m}/${y}`};
   const attributionLine = () => {const a=window.NEXTracking?.attribution?.().last_touch||{};return `Origem da visita: ${a.utm_source||'direct'} / ${a.utm_medium||'none'}${a.utm_campaign?` / ${a.utm_campaign}`:''}${a.utm_content?` / ${a.utm_content}`:''}`};
-  const makeMessage = () => `Olá, NEX! Respondi ao questionário do Blueprint e gostaria de solicitar uma reunião.\n\nNome: ${values.name}\nWhatsApp: ${values.phone}\nEmpresa: ${values.company}\nSetor: ${values.sector}\nO que vendemos: ${values.offer}\nObjetivo: ${values.goal}\nDesafio: ${values.challenge}\nOrigem dos clientes: ${values.source}\nPonto de perda: ${values.loss}\nAcompanhamento: ${values.routine}\nDia preferido: ${formatDate(values.date)}\nHorário preferido: ${values.time} (Brasília)\n${attributionLine()}\nCódigo da sessão: ${window.NEXTracking?.sessionId||'indisponível'}\n\nPodem confirmar a disponibilidade? Após a confirmação, gostaria de receber o primeiro e-book da NEX.`;
+  const makeMessage = () => `Olá, NEX! Respondi ao questionário do Blueprint e gostaria de solicitar uma reunião.\n\nNome: ${values.name}\nWhatsApp: ${values.phone}\nEmpresa: ${values.company}\nSetor: ${values.sector}\nO que vendemos: ${values.offer||'Não informado'}\nObjetivo: ${values.goal||'Não informado'}\nDesafio: ${values.challenge||'Não informado'}\nOrigem dos clientes: ${values.source||'Não informado'}\nPonto de perda: ${values.loss||'Não informado'}\nAcompanhamento: ${values.routine||'Não informado'}\nDia preferido: ${formatDate(values.date)}\nHorário preferido: ${values.time} (Brasília)\n${attributionLine()}\nCódigo da sessão: ${window.NEXTracking?.sessionId||'indisponível'}\n\nPodem confirmar a disponibilidade? Após a confirmação, gostaria de receber o primeiro e-book da NEX.`;
   const finish = () => {
     $('question-state').hidden=true;$('complete-state').hidden=false;
     $('booking-summary').innerHTML=`<p><b>Empresa:</b> ${escapeHTML(values.company)}</p><p><b>Dia solicitado:</b> ${escapeHTML(formatDate(values.date))}</p><p><b>Horário:</b> ${escapeHTML(values.time)} (Brasília)</p>`;
@@ -131,7 +131,7 @@
     window.NEXTracking?.track('booking_completed',{preferred_date:values.date,preferred_time:values.time,goal:values.goal,challenge:values.challenge});
     window.scrollTo({top:0,behavior:'smooth'});
   };
-  $('booking-form').addEventListener('submit',event=>{event.preventDefault();const error=collect();if(error){$('question-error').textContent=error;return}if(step===0)window.NEXTracking?.track('booking_started');window.NEXTracking?.track('booking_step_completed',{step:step+1,question:questions[step].id});if(step<11){step++;render()}else finish()});
+  $('booking-form').addEventListener('submit',event=>{event.preventDefault();const error=collect();if(error){$('question-error').textContent=error;return}if(step===0)window.NEXTracking?.track('booking_started');window.NEXTracking?.track('booking_step_completed',{step:step+1,question:questions[step].id,skipped:!values[questions[step].id]});if(step<11){step++;render()}else finish()});
   $('previous-button').addEventListener('click',()=>{saveCurrent();if(step>0){step--;render()}});
   $('edit-answers').addEventListener('click',()=>{$('complete-state').hidden=true;$('question-state').hidden=false;step=0;render();window.scrollTo({top:0,behavior:'smooth'})});
   $('copy-message').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(makeMessage());$('copy-message').textContent='Mensagem copiada ✓'}catch{$('copy-message').textContent='Abra o WhatsApp para enviar'}});
