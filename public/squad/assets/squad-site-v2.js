@@ -197,6 +197,20 @@
         return item;
       }),
     );
+    const FRONTS = {
+      "Temos sistemas ou projetos tecnológicos parados.": ["Desenvolvimento"],
+      "Dependemos de vários fornecedores sem coordenação.": ["Desenvolvimento", "Manutenção"],
+      "Existem processos manuais que poderiam ser automatizados.": ["Automações e IA"],
+      "Precisamos integrar ferramentas e dados.": ["Integrações"],
+      "Queremos aplicar IA com estrutura e segurança.": ["Automações e IA"],
+      "Não temos uma equipe técnica interna completa.": ["Desenvolvimento", "Manutenção"],
+    };
+    const fronts = [...new Set(selected.flatMap((d) => FRONTS[d] || []))];
+    const frontsEl = document.getElementById("result-fronts");
+    if (frontsEl) {
+      frontsEl.hidden = !fronts.length;
+      frontsEl.textContent = fronts.length ? "Frentes do Squad que entram na conversa: " + fronts.join(", ") + "." : "";
+    }
     const message = selected.length
       ? baseMessage +
         "\n\nHoje, na nossa operação:\n" +
@@ -295,6 +309,11 @@
       consent?.focus();
       return;
     }
+    if (!selectedDemands().length) {
+      const s = document.getElementById("quiz-sync");
+      if (s) s.textContent = "Marque ao menos uma situação para ver seu ponto de partida.";
+      return;
+    }
     updateCount();
     updateResult();
     window.NEXTracking?.track("squad_quiz_submitted", { selected: selectedDemands().length });
@@ -310,6 +329,8 @@
   form.addEventListener("change", () => {
     if (!quizStarted) { quizStarted = true; window.NEXTracking?.track("squad_quiz_started"); }
     window.NEXTracking?.track("squad_quiz_change", { selected: selectedDemands().length });
+    const qs = document.getElementById("quiz-sync");
+    if (qs && qs.textContent.startsWith("Marque")) qs.textContent = "";
     updateCount();
     if (!document.getElementById("result").hidden) updateResult();
   });
