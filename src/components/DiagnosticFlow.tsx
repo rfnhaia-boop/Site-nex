@@ -19,7 +19,7 @@ const SINTOMA_OPTIONS = [
   "Falta de dados pra decidir",
 ];
 
-const WHATSAPP_NUMBER = "5511936202934";
+const WHATSAPP_NUMBER = "5511953878155";
 
 type FormState = {
   empresa: string;

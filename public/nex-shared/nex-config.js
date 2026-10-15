@@ -1,5 +1,5 @@
 /* NEX — configuração única dos produtos. Trocar aqui vale para Blueprint, Squad, Context Agent e Studio. */
-window.NEX_WHATSAPP_NUMBER = window.NEX_WHATSAPP_NUMBER || '5511936202934';
+window.NEX_WHATSAPP_NUMBER = window.NEX_WHATSAPP_NUMBER || '5511953878155';
 // Identificação da empresa no rodapé (LGPD/CDC). Preencher o CNPJ aqui faz a linha aparecer em todos os produtos.
 window.NEX_COMPANY = window.NEX_COMPANY || { legal: 'NEW', cnpj: '' };
 

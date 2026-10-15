@@ -107,7 +107,7 @@ export function ServicePage({ data }: { data: ServicePageData }) {
             {data.primaryCta}
           </TrackedLink>
           <TrackedLink
-            href="https://wa.me/5511936202934"
+            href="https://wa.me/5511953878155"
             external
             cta={`${slug}_whatsapp`}
             className="px-8 py-4 rounded-2xl border border-white/10 bg-white/[0.03] text-white font-bold uppercase tracking-widest text-xs text-center hover:bg-white/[0.08] transition-colors flex items-center justify-center gap-2"

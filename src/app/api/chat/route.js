@@ -210,7 +210,7 @@ export async function POST(request) {
       if (!finalText.trim()) {
         controller.enqueue(
           encoder.encode(
-            'Estou com muita gente conversando agora e não consegui responder. Tenta de novo em 1 minuto ou fala direto com a equipe pelo WhatsApp: https://wa.me/5511936202934',
+            'Estou com muita gente conversando agora e não consegui responder. Tenta de novo em 1 minuto ou fala direto com a equipe pelo WhatsApp: https://wa.me/5511953878155',
           ),
         );
       }

@@ -41,7 +41,7 @@
     link.append(circle,label,detail,indicator);choices.append(link);
   }
   const foot=document.createElement('div');foot.className='nex-picker-foot';
-  foot.innerHTML='<a href="/">Site principal NEX</a><a href="#havi" data-open-havi>Falar com o Havi</a><a href="https://wa.me/5511936202934" target="_blank" rel="noopener">WhatsApp</a>';
+  foot.innerHTML='<a href="/">Site principal NEX</a><a href="#havi" data-open-havi>Falar com o Havi</a><a href="https://wa.me/5511953878155" target="_blank" rel="noopener">WhatsApp</a>';
   popup.append(foot);
   const footCss=document.createElement('style');footCss.textContent='.nex-picker-foot{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin-top:20px;padding-top:16px;border-top:1px solid #ffffff12;font-family:Inter,Arial,sans-serif}.nex-picker-foot a{font-size:11px;color:#b9bbc0;text-decoration:none}.nex-picker-foot a:hover{color:#ff8b54}';document.head.append(footCss);
   document.body.append(popup);

@@ -1133,7 +1133,7 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col space-y-3">
                   <a href="mailto:new.flow.sys@gmail.com" onClick={() => trackEvent("email_click")} className="text-sm text-zinc-300 hover:text-white transition-colors">new.flow.sys@gmail.com</a>
-                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-300 hover:text-white transition-colors">(11) 93620-2934</a>
+                  <a href="https://wa.me/5511953878155" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-300 hover:text-white transition-colors">(11) 95387-8155</a>
                   <span className="text-sm text-zinc-400">Jundiaí, SP — Brasil</span>
                   <span className="text-xs font-mono text-zinc-500">Atendimento 24/7 via IA</span>
                 </div>
@@ -1147,7 +1147,7 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col space-y-3">
                   <a href="https://www.instagram.com/nex_flow_oficial?igsh=enF3cTEzazF1cTBx&utm_source=qr" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("external_link_click", { metadata: { link: "instagram" } })} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">Instagram</a>
-                  <a href="https://wa.me/5511936202934" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">WhatsApp Direto</a>
+                  <a href="https://wa.me/5511953878155" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click")} className="text-sm text-zinc-400 hover:text-nex-orange hover:translate-x-1 transition-all duration-300">WhatsApp Direto</a>
                 </div>
               </div>
 

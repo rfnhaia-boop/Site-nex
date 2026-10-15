@@ -10,7 +10,7 @@ export const OG_IMAGE = {
 
 // Mesmos dados que aparecem no rodapé do site (NAP precisa bater em todo lugar).
 // LinkedIn fora do sameAs de propósito: o link do site ainda é placeholder.
-const PHONE = "+55-11-93620-2934";
+const PHONE = "+55-11-95387-8155";
 const EMAIL = "new.flow.sys@gmail.com";
 const INSTAGRAM = "https://www.instagram.com/nex_flow_oficial";
 
